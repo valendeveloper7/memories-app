@@ -13,6 +13,8 @@ import { spaceRouter } from './modules/spaces/space.routes.js';
 import { albumRouter } from './modules/albums/album.routes.js';
 import { memoryRouter } from './modules/memories/memory.routes.js';
 import { uploadRouter } from './modules/uploads/upload.routes.js';
+import { commentRouter } from './modules/comments/comment.routes.js';
+import { reactionRouter } from './modules/reactions/reaction.routes.js';
 
 /**
  * Construye la aplicación Express con la cadena de middlewares de seguridad
@@ -55,6 +57,8 @@ export function createApp(): Application {
   app.use('/api/albums', albumRouter);
   app.use('/api/memories', memoryRouter);
   app.use('/api/uploads', uploadRouter);
+  app.use('/api/comments', commentRouter);
+  app.use('/api/reactions', reactionRouter);
 
   app.use(notFound);
   app.use(errorHandler);

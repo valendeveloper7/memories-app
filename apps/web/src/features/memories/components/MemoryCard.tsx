@@ -1,16 +1,25 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { PublicMemory } from 'shared';
 import { cloudinaryThumb } from '@/utils/cloudinary';
 import { useDeleteMemory, useToggleMemoryFavorite } from '../hooks/useMemories';
+import { MemoryLightbox } from './MemoryLightbox';
 
 /** Miniatura de un recuerdo en la cuadrícula. Foto o vídeo, con acciones
- *  rápidas de favorito y borrado. */
+ *  rápidas de favorito y borrado. Al hacer clic abre el lightbox. */
 export function MemoryCard({ memory }: { memory: PublicMemory }) {
   const deleteMemory = useDeleteMemory();
   const toggleFavorite = useToggleMemoryFavorite();
+  const [open, setOpen] = useState(false);
 
-  function handleDelete() {
+  function handleDelete(event: React.MouseEvent) {
+    event.stopPropagation();
     if (window.confirm('¿Eliminar este recuerdo?')) deleteMemory.mutate(memory.id);
+  }
+
+  function handleFavorite(event: React.MouseEvent) {
+    event.stopPropagation();
+    toggleFavorite(memory);
   }
 
   return (
@@ -19,7 +28,8 @@ export function MemoryCard({ memory }: { memory: PublicMemory }) {
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.25 }}
-      className="group relative overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-800"
+      onClick={() => setOpen(true)}
+      className="group relative cursor-pointer overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-800"
     >
       {memory.type === 'video' ? (
         <video
@@ -43,7 +53,7 @@ export function MemoryCard({ memory }: { memory: PublicMemory }) {
       <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
         <button
           type="button"
-          onClick={() => toggleFavorite(memory)}
+          onClick={handleFavorite}
           aria-label="Favorito"
           className="rounded-full bg-black/40 px-2 py-1 text-sm backdrop-blur"
         >
@@ -64,6 +74,8 @@ export function MemoryCard({ memory }: { memory: PublicMemory }) {
           {memory.title}
         </figcaption>
       )}
+
+      {open && <MemoryLightbox memory={memory} onClose={() => setOpen(false)} />}
     </motion.figure>
   );
 }
