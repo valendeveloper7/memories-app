@@ -1,8 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { HomePage } from '@/features/home/pages/HomePage';
+import { AppLayout } from '@/layouts/AppLayout';
 import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { RegisterPage } from '@/features/auth/pages/RegisterPage';
 import { OnboardingPage } from '@/features/spaces/pages/OnboardingPage';
+import { AlbumsListPage } from '@/features/albums/pages/AlbumsListPage';
 import {
   NoSpaceRoute,
   ProtectedRoute,
@@ -14,7 +15,7 @@ import {
  * Rutas de la app en tres niveles de acceso:
  *  - públicas (solo invitados): login/registro
  *  - autenticadas sin Space: onboarding
- *  - autenticadas con Space: la app en sí
+ *  - autenticadas con Space: la app dentro de AppLayout
  */
 export function AppRouter() {
   return (
@@ -30,7 +31,9 @@ export function AppRouter() {
         </Route>
 
         <Route element={<RequireSpace />}>
-          <Route path="/" element={<HomePage />} />
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<AlbumsListPage />} />
+          </Route>
         </Route>
       </Route>
 

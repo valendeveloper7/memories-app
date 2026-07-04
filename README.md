@@ -63,4 +63,15 @@ Vitest (unit) + Playwright (e2e) — deciden compartir configuración con Vite.
   pareja. Sincroniza `spaceId` en el store tras crear/unirse.
 - Tests de runtime de auth + validación sobre las rutas de Spaces.
 
-➡️ **Siguiente:** Paso 4 — módulo de Álbumes (CRUD + grid simple).
+✅ **Paso 4 — Álbumes (CRUD) completado.**
+- Backend: modelo `Album` (con `spaceId`, `layout` para el futuro editor,
+  índices), CRUD completo (`GET/POST/GET:id/PATCH/DELETE /albums`) con filtros
+  (favoritos, archivados, tag, visibilidad). Middleware transversal
+  `requireSpace` que escopa todo por `spaceId` (verificación de pertenencia en
+  un único sitio).
+- Frontend: feature albums (api, hooks React Query con invalidación), lista en
+  cuadrícula con animaciones, modal de creación, favorito/borrado rápido,
+  filtros, empty state y skeletons. Nuevo `AppLayout` con cabecera.
+- 5 tests de runtime nuevos (16 en total).
+
+➡️ **Siguiente:** Paso 5 — Recuerdos (fotos/vídeos) + subida a Cloudinary.

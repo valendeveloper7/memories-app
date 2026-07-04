@@ -10,6 +10,7 @@ import { notFound } from './middlewares/notFound.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { userRouter } from './modules/users/user.routes.js';
 import { spaceRouter } from './modules/spaces/space.routes.js';
+import { albumRouter } from './modules/albums/album.routes.js';
 
 /**
  * Construye la aplicación Express con la cadena de middlewares de seguridad
@@ -49,7 +50,7 @@ export function createApp(): Application {
   app.use('/api/auth', authRouter);
   app.use('/api/users', userRouter);
   app.use('/api/spaces', spaceRouter);
-  // app.use('/api/albums', albumsRouter);
+  app.use('/api/albums', albumRouter);
 
   app.use(notFound);
   app.use(errorHandler);
