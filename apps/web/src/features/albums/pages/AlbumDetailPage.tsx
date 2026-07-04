@@ -4,6 +4,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/Button';
 import { MemoryUploader } from '@/features/memories/components/MemoryUploader';
 import { MemoryGrid } from '@/features/memories/components/MemoryGrid';
+import { CreateNoteModal } from '@/features/memories/components/CreateNoteModal';
 import { useAlbum } from '../hooks/useAlbums';
 import { useAlbumMemories } from '../hooks/useAlbumMemories';
 import { AlbumEditor } from '../components/editor/AlbumEditor';
@@ -13,6 +14,7 @@ export function AlbumDetailPage() {
   const { data: album, isLoading } = useAlbum(id);
   const { data: memories } = useAlbumMemories(id);
   const [editing, setEditing] = useState(false);
+  const [noteOpen, setNoteOpen] = useState(false);
 
   const hasLayout = (album?.layout?.length ?? 0) > 0;
 
@@ -42,11 +44,16 @@ export function AlbumDetailPage() {
               )}
             </div>
           </div>
-          {memories && memories.length > 0 && (
-            <Button variant="ghost" onClick={() => setEditing(true)}>
-              🎨 Editar diseño
+          <div className="flex gap-2">
+            <Button variant="ghost" onClick={() => setNoteOpen(true)}>
+              📝 Nota
             </Button>
-          )}
+            {memories && memories.length > 0 && (
+              <Button variant="ghost" onClick={() => setEditing(true)}>
+                🎨 Editar diseño
+              </Button>
+            )}
+          </div>
         </div>
       )}
 
@@ -66,6 +73,8 @@ export function AlbumDetailPage() {
       {editing && album && memories && (
         <AlbumEditor album={album} memories={memories} onClose={() => setEditing(false)} />
       )}
+
+      <CreateNoteModal albumId={id} open={noteOpen} onClose={() => setNoteOpen(false)} />
     </div>
   );
 }

@@ -31,7 +31,18 @@ export function MemoryCard({ memory }: { memory: PublicMemory }) {
       onClick={() => setOpen(true)}
       className="group relative cursor-pointer overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-800"
     >
-      {memory.type === 'video' ? (
+      {memory.type === 'text' ? (
+        <div className="flex h-full w-full flex-col justify-center bg-gradient-to-br from-accent/15 to-secondary/15 p-4">
+          {memory.title && (
+            <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
+              {memory.title}
+            </p>
+          )}
+          <p className="mt-1 line-clamp-4 text-sm text-neutral-600 dark:text-neutral-300">
+            {memory.description}
+          </p>
+        </div>
+      ) : memory.type === 'video' ? (
         <video
           src={memory.mediaUrl}
           className="h-full w-full object-cover"

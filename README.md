@@ -1,77 +1,80 @@
 # Nosotros — App de recuerdos para dos
 
-Aplicación privada de recuerdos (fotos, vídeos, álbumes, línea de tiempo) para
-dos personas, con un editor visual libre inspirado en Pinterest/Canva/Notion.
+Aplicación privada de recuerdos (fotos, vídeos, notas, álbumes, línea de tiempo)
+para dos personas, con un editor visual libre inspirado en Pinterest/Canva/Notion.
 
-📄 **Documento completo de producto y arquitectura:** [`docs/ARQUITECTURA.md`](./docs/ARQUITECTURA.md)
+📄 **Documento de producto y arquitectura:** [`docs/ARQUITECTURA.md`](./docs/ARQUITECTURA.md)
 
-Este documento cubre visión de producto, decisiones de arquitectura,
-estructura de carpetas, modelo de datos, diagramas de flujo, diseño de la
-API REST y el roadmap por fases. **Léelo antes de continuar** — el desarrollo
-avanza paso a paso y cada fase se construye sobre las decisiones descritas ahí.
+## Stack
 
-## Estructura del monorepo
+- **Frontend:** React + Vite + TypeScript + TailwindCSS + React Query + Zustand + Framer Motion + Socket.io-client
+- **Backend:** Node + Express + TypeScript + Mongoose (MongoDB) + JWT + Socket.io + Cloudinary
+- **Compartido:** paquete `shared` con tipos TS y esquemas `zod` reutilizados en front y back
+- **Monorepo:** pnpm workspaces
+- **Tests:** Vitest + supertest (backend)
 
-Monorepo gestionado con **pnpm workspaces**:
+## Estructura
 
 ```
 apps/
-  web/       # Frontend — React + Vite + TS + Tailwind + React Query + Zustand
-  api/       # Backend — Express + TS + Mongoose (módulos por dominio)
+  web/       # Frontend (feature-based)
+  api/       # Backend (módulos por dominio)
 packages/
-  shared/    # Tipos TS + esquemas zod compartidos entre front y back
+  shared/    # Tipos + esquemas zod compartidos
 ```
 
 ## Puesta en marcha
 
+Requisitos: Node ≥ 20, pnpm 9, una instancia de MongoDB (local o Atlas) y una
+cuenta de Cloudinary.
+
 ```bash
 pnpm install
-pnpm --filter shared build          # compila los tipos compartidos
+pnpm --filter shared build
 
-# copia y rellena las variables de entorno
-cp apps/api/.env.example apps/api/.env
+# Variables de entorno
+cp apps/api/.env.example apps/api/.env   # rellena MONGODB_URI y CLOUDINARY_*
 cp apps/web/.env.example apps/web/.env
 
-pnpm dev                            # arranca web (5173) y api (4000) en paralelo
+pnpm dev      # arranca web (5173) y api (4000) en paralelo
 ```
 
-Scripts útiles: `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm test`.
+Scripts: `pnpm typecheck`, `pnpm build`, `pnpm test` (por workspace con `--filter`).
 
-## Stack de testing
+## Funcionalidades implementadas
 
-Vitest (unit) + Playwright (e2e) — deciden compartir configuración con Vite.
+- **Autenticación:** registro/login con JWT + refresh tokens rotativos (cookie
+  httpOnly), refresh automático en el cliente.
+- **Spaces (pareja):** crear/unirse con código de invitación; todo el contenido
+  se escopa por `spaceId`.
+- **Álbumes:** CRUD, favoritos, archivado, tags, color, icono, filtros.
+- **Recuerdos:** fotos, vídeos y notas de texto; subida directa firmada a
+  Cloudinary con progreso; paginación por cursor; favoritos.
+- **Editor visual freeform:** arrastrar, redimensionar (snap a grid), rotar,
+  capas, bloquear, guardar el diseño (concurrencia optimista).
+- **Timeline:** línea vertical por año con animaciones al hacer scroll.
+- **"Un día como hoy":** recuerdos de este día en años anteriores.
+- **Búsqueda y filtros:** por texto, tipo y favoritos.
+- **Comentarios y reacciones:** con emojis, en un lightbox por recuerdo.
+- **Notificaciones en tiempo real:** Socket.io (recuerdo/comentario/reacción).
+- **Estadísticas:** recuentos, días juntos, lugar top, mapa de calor de actividad.
+- **Calendario:** cuadrícula mensual con miniaturas por día.
+- **Personalización:** tema claro/oscuro/sistema, colores, tipografía, radios,
+  densidad y animaciones — aplicado en runtime vía variables CSS.
 
-## Estado actual
+## Roadmap pendiente (futuro)
 
-✅ **Fase 0 — Fundación completada.** Esqueleto del monorepo operativo.
+- Compartir álbumes con terceros y permisos finos (viewer/editor/admin).
+- Respuestas anidadas en comentarios (el modelo ya lo soporta).
+- Subida de avatar de perfil (endpoint listo, falta UI).
+- Recuerdos de audio y ubicación con mapa.
+- Notificaciones push (FCM) y PWA offline.
+- Suite E2E con Playwright.
 
-✅ **Paso 2 — Autenticación completada.**
-- Backend: registro (bcrypt), login, `refresh` con **rotación de refresh tokens**
-  (opacos, hasheados en BD, en cookie httpOnly), `logout`, middleware
-  `requireAuth`, validación con zod y rate limiting en `/auth/*`.
-- Frontend: store de sesión (Zustand, token en memoria), interceptor de axios
-  con refresh automático y single-flight, guards de ruta, y páginas de
-  login/registro que validan con los **mismos esquemas zod** del backend.
-- Tests de runtime (Vitest + supertest) sobre la cadena de middlewares.
+## Seguridad
 
-✅ **Paso 3 — Spaces (la pareja) completado.**
-- Backend: modelo `Space` con miembros y `inviteCode` único, endpoints
-  `POST /spaces` (crear, quedas como owner), `POST /spaces/join` (unirse con
-  código, máx. 2 miembros), `GET /spaces/me`. Actualiza `user.spaceId`.
-- Frontend: onboarding con pestañas crear/unirse, guards `RequireSpace` /
-  `NoSpaceRoute`, y la home muestra el código de invitación mientras falta la
-  pareja. Sincroniza `spaceId` en el store tras crear/unirse.
-- Tests de runtime de auth + validación sobre las rutas de Spaces.
-
-✅ **Paso 4 — Álbumes (CRUD) completado.**
-- Backend: modelo `Album` (con `spaceId`, `layout` para el futuro editor,
-  índices), CRUD completo (`GET/POST/GET:id/PATCH/DELETE /albums`) con filtros
-  (favoritos, archivados, tag, visibilidad). Middleware transversal
-  `requireSpace` que escopa todo por `spaceId` (verificación de pertenencia en
-  un único sitio).
-- Frontend: feature albums (api, hooks React Query con invalidación), lista en
-  cuadrícula con animaciones, modal de creación, favorito/borrado rápido,
-  filtros, empty state y skeletons. Nuevo `AppLayout` con cabecera.
-- 5 tests de runtime nuevos (16 en total).
-
-➡️ **Siguiente:** Paso 5 — Recuerdos (fotos/vídeos) + subida a Cloudinary.
+Helmet, CORS con whitelist, rate limiting (agresivo en `/auth`), bcrypt,
+validación y sanitización con zod, `express-mongo-sanitize`, verificación de
+pertenencia al Space como middleware transversal. El secret de Cloudinary vive
+solo en el backend (`.env`, gitignored) y firma las subidas; nunca se expone al
+cliente.
