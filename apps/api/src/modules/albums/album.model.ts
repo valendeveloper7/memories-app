@@ -100,6 +100,7 @@ export function toPublicAlbum(album: AlbumHydrated, includeLayout = false): Publ
     isArchived: album.isArchived,
     tags: album.tags,
     createdBy: album.createdBy.toString(),
+    version: album.version,
     ...(includeLayout && {
       layout: album.layout.map((item) => ({
         memoryId: item.memoryId.toString(),

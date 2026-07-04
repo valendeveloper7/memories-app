@@ -38,6 +38,7 @@ export interface PublicAlbum {
   tags: string[];
   createdBy: Id;
   layout?: AlbumLayoutItem[];
+  version: number;
   createdAt: IsoDate;
   updatedAt: IsoDate;
 }

@@ -32,6 +32,26 @@ export const updateAlbumSchema = z
     message: 'No hay nada que actualizar',
   });
 
+/** Un elemento del lienzo del álbum (posición y estilo de un recuerdo). */
+export const albumLayoutItemSchema = z.object({
+  memoryId: z.string().min(1),
+  x: z.number(),
+  y: z.number(),
+  w: z.number().positive(),
+  h: z.number().positive(),
+  rotation: z.number().default(0),
+  zIndex: z.number().default(0),
+  borderRadius: z.number().optional(),
+  shadow: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+  locked: z.boolean().optional(),
+});
+
+/** Guardado del layout completo del editor (con concurrencia optimista). */
+export const updateAlbumLayoutSchema = z.object({
+  layout: z.array(albumLayoutItemSchema).max(500),
+  version: z.number().int().nonnegative().optional(),
+});
+
 /** Filtros para el listado de álbumes (query params). */
 export const listAlbumsQuerySchema = z.object({
   favorite: z.enum(['true', 'false']).optional(),
@@ -42,4 +62,5 @@ export const listAlbumsQuerySchema = z.object({
 
 export type CreateAlbumInput = z.infer<typeof createAlbumSchema>;
 export type UpdateAlbumInput = z.infer<typeof updateAlbumSchema>;
+export type UpdateAlbumLayoutInput = z.infer<typeof updateAlbumLayoutSchema>;
 export type ListAlbumsQuery = z.infer<typeof listAlbumsQuerySchema>;

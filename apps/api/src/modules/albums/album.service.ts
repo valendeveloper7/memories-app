@@ -4,6 +4,7 @@ import type {
   ListAlbumsQuery,
   PublicAlbum,
   UpdateAlbumInput,
+  UpdateAlbumLayoutInput,
 } from 'shared';
 import { ApiError } from '../../utils/ApiError.js';
 import { AlbumModel, toPublicAlbum, type AlbumDocument } from './album.model.js';
@@ -55,6 +56,33 @@ export async function updateAlbum(
     { new: true, runValidators: true },
   );
   if (!album) throw ApiError.notFound('Álbum no encontrado');
+  return toPublicAlbum(album, true);
+}
+
+/**
+ * Guarda el layout del editor. Usa concurrencia optimista: si el cliente envía
+ * una `version` distinta de la actual, significa que la pareja lo editó mientras
+ * tanto y se rechaza (409) para no pisar sus cambios.
+ */
+export async function updateAlbumLayout(
+  scope: Scope,
+  id: string,
+  input: UpdateAlbumLayoutInput,
+): Promise<PublicAlbum> {
+  if (!Types.ObjectId.isValid(id)) throw ApiError.notFound('Álbum no encontrado');
+  const album = await AlbumModel.findOne({ _id: id, spaceId: scope.spaceId });
+  if (!album) throw ApiError.notFound('Álbum no encontrado');
+
+  if (input.version !== undefined && input.version !== album.version) {
+    throw ApiError.conflict('El álbum se editó desde otro sitio. Recárgalo para no perder cambios.');
+  }
+
+  album.layout = input.layout.map((item) => ({
+    ...item,
+    memoryId: new Types.ObjectId(item.memoryId),
+  }));
+  album.version += 1;
+  await album.save();
   return toPublicAlbum(album, true);
 }
 

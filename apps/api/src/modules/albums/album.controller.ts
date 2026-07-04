@@ -6,6 +6,7 @@ import {
   getAlbum,
   listAlbums,
   updateAlbum,
+  updateAlbumLayout,
 } from './album.service.js';
 
 /** Construye el scope (espacio + usuario) que la capa de servicio necesita. */
@@ -31,6 +32,11 @@ export async function create(req: Request, res: Response): Promise<void> {
 
 export async function update(req: Request, res: Response): Promise<void> {
   const album = await updateAlbum(scopeOf(req), req.params.id!, req.body);
+  res.json(album);
+}
+
+export async function updateLayout(req: Request, res: Response): Promise<void> {
+  const album = await updateAlbumLayout(scopeOf(req), req.params.id!, req.body);
   res.json(album);
 }
 

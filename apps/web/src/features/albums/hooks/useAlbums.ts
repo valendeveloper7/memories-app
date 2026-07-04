@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { ListAlbumsQuery, PublicAlbum, UpdateAlbumInput } from 'shared';
+import type {
+  ListAlbumsQuery,
+  PublicAlbum,
+  UpdateAlbumInput,
+  UpdateAlbumLayoutInput,
+} from 'shared';
 import { albumsApi } from '../api/albums.api';
 
 const albumKeys = {
@@ -40,6 +45,15 @@ export function useUpdateAlbum() {
       queryClient.invalidateQueries({ queryKey: albumKeys.all });
       queryClient.setQueryData(albumKeys.detail(album.id), album);
     },
+  });
+}
+
+export function useUpdateLayout(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: UpdateAlbumLayoutInput) => albumsApi.updateLayout(id, input),
+    onSuccess: (album: PublicAlbum) =>
+      queryClient.setQueryData(albumKeys.detail(album.id), album),
   });
 }
 

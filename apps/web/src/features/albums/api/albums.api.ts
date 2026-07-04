@@ -3,6 +3,7 @@ import type {
   ListAlbumsQuery,
   PublicAlbum,
   UpdateAlbumInput,
+  UpdateAlbumLayoutInput,
 } from 'shared';
 import { http } from '@/services/http';
 
@@ -17,6 +18,9 @@ export const albumsApi = {
 
   update: (id: string, input: UpdateAlbumInput) =>
     http.patch<PublicAlbum>(`/albums/${id}`, input).then((r) => r.data),
+
+  updateLayout: (id: string, input: UpdateAlbumLayoutInput) =>
+    http.patch<PublicAlbum>(`/albums/${id}/layout`, input).then((r) => r.data),
 
   remove: (id: string) => http.delete(`/albums/${id}`).then(() => undefined),
 };
