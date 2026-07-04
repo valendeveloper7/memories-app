@@ -7,6 +7,7 @@ export * from './types/upload.js';
 export * from './types/memory.js';
 export * from './types/comment.js';
 export * from './types/reaction.js';
+export * from './types/notification.js';
 export * from './schemas/auth.schema.js';
 export * from './schemas/space.schema.js';
 export * from './schemas/album.schema.js';

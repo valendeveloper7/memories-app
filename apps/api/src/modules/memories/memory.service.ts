@@ -9,6 +9,7 @@ import type {
 import { ApiError } from '../../utils/ApiError.js';
 import { AlbumModel } from '../albums/album.model.js';
 import { mediaStorage } from '../../services/mediaStorage/CloudinaryStorage.js';
+import { notifySpace } from '../notifications/notification.service.js';
 import { MemoryModel, toPublicMemory, type MemoryDocument } from './memory.model.js';
 
 interface Scope {
@@ -105,6 +106,14 @@ export async function createMemory(scope: Scope, input: CreateMemoryInput): Prom
     location: location
       ? { name: location.name, type: 'Point', coordinates: location.coordinates }
       : undefined,
+  });
+
+  await notifySpace({
+    spaceId: scope.spaceId,
+    actorId: scope.userId,
+    type: 'memory_added',
+    entityType: 'memory',
+    entityId: memory._id.toString(),
   });
 
   return toPublicMemory(memory);

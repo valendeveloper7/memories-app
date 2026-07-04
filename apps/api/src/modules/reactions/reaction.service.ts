@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import { REACTION_EMOJIS, type ReactionSummary, type ToggleReactionInput } from 'shared';
 import { assertTargetInSpace } from '../../utils/assertTargetInSpace.js';
+import { notifySpace } from '../notifications/notification.service.js';
 import { ReactionModel } from './reaction.model.js';
 
 interface Scope {
@@ -27,6 +28,16 @@ export async function toggleReaction(
     await existing.deleteOne();
   } else {
     await ReactionModel.create({ ...filter, spaceId: new Types.ObjectId(scope.spaceId) });
+    // Solo notificamos al añadir (no al quitar) una reacción.
+    if (input.targetType !== 'comment') {
+      await notifySpace({
+        spaceId: scope.spaceId,
+        actorId: scope.userId,
+        type: 'reaction_added',
+        entityType: input.targetType,
+        entityId: input.targetId,
+      });
+    }
   }
 
   return summarize(scope.userId, input.targetType, input.targetId);

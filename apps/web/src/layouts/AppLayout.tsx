@@ -3,6 +3,8 @@ import { MAX_SPACE_MEMBERS } from 'shared';
 import { useAuthStore } from '@/features/auth/store/authStore';
 import { useLogout } from '@/features/auth/hooks/useAuth';
 import { useMySpace } from '@/features/spaces/hooks/useSpaces';
+import { useRealtimeNotifications } from '@/features/notifications/hooks/useNotifications';
+import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { Button } from '@/components/ui/Button';
 
 const NAV_ITEMS = [
@@ -21,6 +23,8 @@ export function AppLayout() {
   const { data: space } = useMySpace();
   const waitingForPartner = space ? space.members.length < MAX_SPACE_MEMBERS : false;
 
+  useRealtimeNotifications();
+
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-40 border-b border-neutral-200/70 bg-surface/80 backdrop-blur dark:border-neutral-800">
@@ -36,6 +40,7 @@ export function AppLayout() {
             )}
           </div>
           <div className="flex items-center gap-2">
+            <NotificationBell />
             <span className="hidden text-sm text-neutral-500 sm:inline dark:text-neutral-400">
               {user?.name}
             </span>

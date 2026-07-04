@@ -2,6 +2,7 @@ import { Types } from 'mongoose';
 import type { CreateCommentInput, PublicComment } from 'shared';
 import { ApiError } from '../../utils/ApiError.js';
 import { assertTargetInSpace } from '../../utils/assertTargetInSpace.js';
+import { notifySpace } from '../notifications/notification.service.js';
 import { UserModel } from '../users/user.model.js';
 import { CommentModel, type CommentHydrated } from './comment.model.js';
 
@@ -59,6 +60,15 @@ export async function createComment(scope: Scope, input: CreateCommentInput): Pr
       ? new Types.ObjectId(input.parentCommentId)
       : undefined,
   });
+
+  await notifySpace({
+    spaceId: scope.spaceId,
+    actorId: scope.userId,
+    type: 'comment_added',
+    entityType: 'comment',
+    entityId: comment._id.toString(),
+  });
+
   return (await toPublicComments([comment]))[0]!;
 }
 
