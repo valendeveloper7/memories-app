@@ -1,10 +1,12 @@
 import { createServer } from 'node:http';
 import { createApp } from './app.js';
 import { connectDatabase } from './config/db.js';
+import { configureCloudinary } from './config/cloudinary.js';
 import { env } from './config/env.js';
 
 /** Punto de entrada: conecta a la BD y arranca el servidor HTTP. */
 async function bootstrap(): Promise<void> {
+  configureCloudinary();
   await connectDatabase();
 
   const app = createApp();

@@ -4,6 +4,7 @@ import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { RegisterPage } from '@/features/auth/pages/RegisterPage';
 import { OnboardingPage } from '@/features/spaces/pages/OnboardingPage';
 import { AlbumsListPage } from '@/features/albums/pages/AlbumsListPage';
+import { AlbumDetailPage } from '@/features/albums/pages/AlbumDetailPage';
 import {
   NoSpaceRoute,
   ProtectedRoute,
@@ -33,6 +34,7 @@ export function AppRouter() {
         <Route element={<RequireSpace />}>
           <Route element={<AppLayout />}>
             <Route path="/" element={<AlbumsListPage />} />
+            <Route path="/albums/:id" element={<AlbumDetailPage />} />
           </Route>
         </Route>
       </Route>

@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import type { PublicAlbum } from 'shared';
 import { useUpdateAlbum, useDeleteAlbum } from '../hooks/useAlbums';
 
 /** Tarjeta de un álbum en la cuadrícula. Portada por color/imagen, con acciones
  *  rápidas de favorito y borrado. */
 export function AlbumCard({ album }: { album: PublicAlbum }) {
+  const navigate = useNavigate();
   const updateAlbum = useUpdateAlbum();
   const deleteAlbum = useDeleteAlbum();
 
@@ -12,11 +14,13 @@ export function AlbumCard({ album }: { album: PublicAlbum }) {
     ? { backgroundImage: `url(${album.coverUrl})`, backgroundSize: 'cover' }
     : { background: album.color ?? 'linear-gradient(135deg, rgb(var(--color-accent)/0.25), rgb(var(--color-secondary)/0.25))' };
 
-  function toggleFavorite() {
+  function toggleFavorite(event: React.MouseEvent) {
+    event.stopPropagation();
     updateAlbum.mutate({ id: album.id, input: { isFavorite: !album.isFavorite } });
   }
 
-  function handleDelete() {
+  function handleDelete(event: React.MouseEvent) {
+    event.stopPropagation();
     if (window.confirm(`¿Eliminar el álbum "${album.title}"?`)) {
       deleteAlbum.mutate(album.id);
     }
@@ -29,7 +33,8 @@ export function AlbumCard({ album }: { album: PublicAlbum }) {
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="group overflow-hidden rounded-2xl border border-neutral-200/70 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
+      onClick={() => navigate(`/albums/${album.id}`)}
+      className="group cursor-pointer overflow-hidden rounded-2xl border border-neutral-200/70 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
     >
       <div className="relative flex h-32 items-center justify-center text-4xl" style={background}>
         {album.icon && <span>{album.icon}</span>}
