@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Tokens de tema como variables CSS. La personalización por usuario
+ * sobrescribe estas variables en runtime (desde el store de tema), sin
+ * necesidad de recompilar Tailwind. En modo oscuro (.dark en <html>)
+ * cambian las superficies.
+ */
+:root {
+  --color-accent: 226 109 138; /* rosa */
+  --color-secondary: 109 125 226; /* azul */
+  --color-surface: 255 255 255;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+.dark {
+  --color-surface: 18 18 23;
+}
+
+body {
+  @apply bg-surface text-neutral-900 antialiased dark:text-neutral-100;
+  font-family: var(--font-sans);
+}

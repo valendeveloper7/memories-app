@@ -10,7 +10,41 @@ estructura de carpetas, modelo de datos, diagramas de flujo, diseño de la
 API REST y el roadmap por fases. **Léelo antes de continuar** — el desarrollo
 avanza paso a paso y cada fase se construye sobre las decisiones descritas ahí.
 
+## Estructura del monorepo
+
+Monorepo gestionado con **pnpm workspaces**:
+
+```
+apps/
+  web/       # Frontend — React + Vite + TS + Tailwind + React Query + Zustand
+  api/       # Backend — Express + TS + Mongoose (módulos por dominio)
+packages/
+  shared/    # Tipos TS + esquemas zod compartidos entre front y back
+```
+
+## Puesta en marcha
+
+```bash
+pnpm install
+pnpm --filter shared build          # compila los tipos compartidos
+
+# copia y rellena las variables de entorno
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env
+
+pnpm dev                            # arranca web (5173) y api (4000) en paralelo
+```
+
+Scripts útiles: `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm test`.
+
+## Stack de testing
+
+Vitest (unit) + Playwright (e2e) — deciden compartir configuración con Vite.
+
 ## Estado actual
 
-🚧 Fase 0 — en definición de arquitectura, pendiente de aprobación antes de
-generar el esqueleto del proyecto.
+✅ **Fase 0 — Fundación completada.** Esqueleto del monorepo operativo:
+frontend y backend compilan y buildean, con una pantalla placeholder. Sin
+features de negocio todavía.
+
+➡️ **Siguiente:** Paso 2 — módulo de autenticación (JWT + refresh tokens).
