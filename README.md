@@ -32,12 +32,22 @@ cuenta de Cloudinary.
 pnpm install
 pnpm --filter shared build
 
+# Base de datos: levanta MongoDB con Docker (persistente)
+docker compose up -d
+# (opcional) interfaz web en http://localhost:8081:
+#   docker compose --profile tools up -d
+
 # Variables de entorno
-cp apps/api/.env.example apps/api/.env   # rellena MONGODB_URI y CLOUDINARY_*
+cp apps/api/.env.example apps/api/.env   # ya trae la URI del compose; rellena CLOUDINARY_*
 cp apps/web/.env.example apps/web/.env
 
 pnpm dev      # arranca web (5173) y api (4000) en paralelo
 ```
+
+> El `docker-compose.yml` incluido levanta MongoDB 7 con un volumen persistente
+> (`mongo_data`). `docker compose down` para los contenedores conservando los
+> datos; `docker compose down -v` los borra. Cambia las credenciales del compose
+> antes de usarlo fuera de desarrollo local.
 
 Scripts: `pnpm typecheck`, `pnpm build`, `pnpm test` (por workspace con `--filter`).
 

@@ -1,0 +1,54 @@
+# MongoDB para desarrollo local de la app "Nosotros".
+#
+# Uso:
+#   docker compose up -d          # levanta MongoDB (y mongo-express)
+#   docker compose down           # para los contenedores (conserva los datos)
+#   docker compose down -v        # para y BORRA los datos del volumen
+#
+# La URI para apps/api/.env sería:
+#   MONGODB_URI=mongodb://nosotros_app:nosotros_pass@127.0.0.1:27017/nosotros?authSource=admin
+#
+# Nota: cambia las credenciales antes de usar esto en cualquier entorno real.
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: nosotros-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: nosotros_app
+      MONGO_INITDB_ROOT_PASSWORD: nosotros_pass
+      MONGO_INITDB_DATABASE: nosotros
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # Interfaz web opcional para inspeccionar la base de datos (http://localhost:8081).
+  # Actívala con: docker compose --profile tools up -d
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: nosotros-mongo-express
+    restart: unless-stopped
+    profiles: ["tools"]
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: nosotros_app
+      ME_CONFIG_MONGODB_ADMINPASSWORD: nosotros_pass
+      ME_CONFIG_MONGODB_URL: mongodb://nosotros_app:nosotros_pass@mongo:27017/?authSource=admin
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+
+volumes:
+  mongo_data:
+    driver: local
