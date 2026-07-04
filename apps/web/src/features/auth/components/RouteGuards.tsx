@@ -12,3 +12,15 @@ export function PublicOnlyRoute() {
   const status = useAuthStore((s) => s.status);
   return status === 'authenticated' ? <Navigate to="/" replace /> : <Outlet />;
 }
+
+/** Exige que el usuario pertenezca a un Space; si no, va al onboarding. */
+export function RequireSpace() {
+  const spaceId = useAuthStore((s) => s.user?.spaceId);
+  return spaceId ? <Outlet /> : <Navigate to="/onboarding" replace />;
+}
+
+/** Solo para usuarios sin Space (onboarding); si ya tienen, va a inicio. */
+export function NoSpaceRoute() {
+  const spaceId = useAuthStore((s) => s.user?.spaceId);
+  return spaceId ? <Navigate to="/" replace /> : <Outlet />;
+}

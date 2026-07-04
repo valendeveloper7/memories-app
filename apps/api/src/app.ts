@@ -9,6 +9,7 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { notFound } from './middlewares/notFound.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { userRouter } from './modules/users/user.routes.js';
+import { spaceRouter } from './modules/spaces/space.routes.js';
 
 /**
  * Construye la aplicación Express con la cadena de middlewares de seguridad
@@ -47,6 +48,7 @@ export function createApp(): Application {
   // Routers de cada módulo de dominio.
   app.use('/api/auth', authRouter);
   app.use('/api/users', userRouter);
+  app.use('/api/spaces', spaceRouter);
   // app.use('/api/albums', albumsRouter);
 
   app.use(notFound);

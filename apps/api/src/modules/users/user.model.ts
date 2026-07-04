@@ -1,4 +1,4 @@
-import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type Types } from 'mongoose';
 import { DEFAULT_USER_PREFERENCES, type PublicUser } from 'shared';
 
 export interface UserDocument {
@@ -6,7 +6,7 @@ export interface UserDocument {
   email: string;
   passwordHash: string;
   avatarUrl?: string;
-  spaceId?: Schema.Types.ObjectId;
+  spaceId?: Types.ObjectId;
   preferences: {
     theme: 'light' | 'dark' | 'system';
     accentColor: string;

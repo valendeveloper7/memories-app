@@ -13,6 +13,7 @@ interface AuthState {
   status: 'idle' | 'authenticated' | 'unauthenticated';
   setSession: (user: PublicUser, accessToken: string) => void;
   setAccessToken: (token: string) => void;
+  patchUser: (partial: Partial<PublicUser>) => void;
   clear: () => void;
 }
 
@@ -22,5 +23,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   status: 'idle',
   setSession: (user, accessToken) => set({ user, accessToken, status: 'authenticated' }),
   setAccessToken: (accessToken) => set({ accessToken }),
+  patchUser: (partial) => set((s) => (s.user ? { user: { ...s.user, ...partial } } : s)),
   clear: () => set({ user: null, accessToken: null, status: 'unauthenticated' }),
 }));

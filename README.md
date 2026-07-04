@@ -54,4 +54,13 @@ Vitest (unit) + Playwright (e2e) — deciden compartir configuración con Vite.
   login/registro que validan con los **mismos esquemas zod** del backend.
 - Tests de runtime (Vitest + supertest) sobre la cadena de middlewares.
 
-➡️ **Siguiente:** Paso 3 — módulo de Spaces (emparejar a la pareja).
+✅ **Paso 3 — Spaces (la pareja) completado.**
+- Backend: modelo `Space` con miembros y `inviteCode` único, endpoints
+  `POST /spaces` (crear, quedas como owner), `POST /spaces/join` (unirse con
+  código, máx. 2 miembros), `GET /spaces/me`. Actualiza `user.spaceId`.
+- Frontend: onboarding con pestañas crear/unirse, guards `RequireSpace` /
+  `NoSpaceRoute`, y la home muestra el código de invitación mientras falta la
+  pareja. Sincroniza `spaceId` en el store tras crear/unirse.
+- Tests de runtime de auth + validación sobre las rutas de Spaces.
+
+➡️ **Siguiente:** Paso 4 — módulo de Álbumes (CRUD + grid simple).

@@ -2,11 +2,19 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { HomePage } from '@/features/home/pages/HomePage';
 import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { RegisterPage } from '@/features/auth/pages/RegisterPage';
-import { ProtectedRoute, PublicOnlyRoute } from '@/features/auth/components/RouteGuards';
+import { OnboardingPage } from '@/features/spaces/pages/OnboardingPage';
+import {
+  NoSpaceRoute,
+  ProtectedRoute,
+  PublicOnlyRoute,
+  RequireSpace,
+} from '@/features/auth/components/RouteGuards';
 
 /**
- * Rutas de la app, separadas en públicas (solo invitados) y protegidas
- * (requieren sesión). A medida que crezcan las features se añadirán aquí.
+ * Rutas de la app en tres niveles de acceso:
+ *  - públicas (solo invitados): login/registro
+ *  - autenticadas sin Space: onboarding
+ *  - autenticadas con Space: la app en sí
  */
 export function AppRouter() {
   return (
@@ -17,7 +25,13 @@ export function AppRouter() {
       </Route>
 
       <Route element={<ProtectedRoute />}>
-        <Route path="/" element={<HomePage />} />
+        <Route element={<NoSpaceRoute />}>
+          <Route path="/onboarding" element={<OnboardingPage />} />
+        </Route>
+
+        <Route element={<RequireSpace />}>
+          <Route path="/" element={<HomePage />} />
+        </Route>
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
