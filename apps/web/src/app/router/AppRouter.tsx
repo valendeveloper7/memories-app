@@ -5,6 +5,8 @@ import { RegisterPage } from '@/features/auth/pages/RegisterPage';
 import { OnboardingPage } from '@/features/spaces/pages/OnboardingPage';
 import { AlbumsListPage } from '@/features/albums/pages/AlbumsListPage';
 import { AlbumDetailPage } from '@/features/albums/pages/AlbumDetailPage';
+import { TimelinePage } from '@/features/timeline/pages/TimelinePage';
+import { SearchPage } from '@/features/search/pages/SearchPage';
 import {
   NoSpaceRoute,
   ProtectedRoute,
@@ -35,6 +37,8 @@ export function AppRouter() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<AlbumsListPage />} />
             <Route path="/albums/:id" element={<AlbumDetailPage />} />
+            <Route path="/timeline" element={<TimelinePage />} />
+            <Route path="/search" element={<SearchPage />} />
           </Route>
         </Route>
       </Route>
