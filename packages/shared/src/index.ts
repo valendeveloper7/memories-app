@@ -8,6 +8,7 @@ export * from './types/memory.js';
 export * from './types/comment.js';
 export * from './types/reaction.js';
 export * from './types/notification.js';
+export * from './types/stats.js';
 export * from './schemas/auth.schema.js';
 export * from './schemas/space.schema.js';
 export * from './schemas/album.schema.js';

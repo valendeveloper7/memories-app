@@ -7,6 +7,8 @@ import { AlbumsListPage } from '@/features/albums/pages/AlbumsListPage';
 import { AlbumDetailPage } from '@/features/albums/pages/AlbumDetailPage';
 import { TimelinePage } from '@/features/timeline/pages/TimelinePage';
 import { SearchPage } from '@/features/search/pages/SearchPage';
+import { StatsPage } from '@/features/stats/pages/StatsPage';
+import { CalendarPage } from '@/features/stats/pages/CalendarPage';
 import {
   NoSpaceRoute,
   ProtectedRoute,
@@ -39,6 +41,8 @@ export function AppRouter() {
             <Route path="/albums/:id" element={<AlbumDetailPage />} />
             <Route path="/timeline" element={<TimelinePage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/stats" element={<StatsPage />} />
           </Route>
         </Route>
       </Route>
