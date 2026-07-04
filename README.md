@@ -43,8 +43,15 @@ Vitest (unit) + Playwright (e2e) — deciden compartir configuración con Vite.
 
 ## Estado actual
 
-✅ **Fase 0 — Fundación completada.** Esqueleto del monorepo operativo:
-frontend y backend compilan y buildean, con una pantalla placeholder. Sin
-features de negocio todavía.
+✅ **Fase 0 — Fundación completada.** Esqueleto del monorepo operativo.
 
-➡️ **Siguiente:** Paso 2 — módulo de autenticación (JWT + refresh tokens).
+✅ **Paso 2 — Autenticación completada.**
+- Backend: registro (bcrypt), login, `refresh` con **rotación de refresh tokens**
+  (opacos, hasheados en BD, en cookie httpOnly), `logout`, middleware
+  `requireAuth`, validación con zod y rate limiting en `/auth/*`.
+- Frontend: store de sesión (Zustand, token en memoria), interceptor de axios
+  con refresh automático y single-flight, guards de ruta, y páginas de
+  login/registro que validan con los **mismos esquemas zod** del backend.
+- Tests de runtime (Vitest + supertest) sobre la cadena de middlewares.
+
+➡️ **Siguiente:** Paso 3 — módulo de Spaces (emparejar a la pareja).

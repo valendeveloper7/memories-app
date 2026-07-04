@@ -1,11 +1,17 @@
 import { motion } from 'framer-motion';
+import { useAuthStore } from '@/features/auth/store/authStore';
+import { useLogout } from '@/features/auth/hooks/useAuth';
+import { Button } from '@/components/ui/Button';
 
 /**
- * Pantalla placeholder de la fundación. Confirma que React, Tailwind,
- * las variables de tema y Framer Motion funcionan de extremo a extremo.
- * Se reemplazará por el dashboard real en fases posteriores.
+ * Pantalla de inicio (protegida). Placeholder del dashboard: saluda al usuario
+ * autenticado y permite cerrar sesión. Se sustituirá por el feed real de
+ * álbumes/recuerdos en fases posteriores.
  */
 export function HomePage() {
+  const user = useAuthStore((s) => s.user);
+  const logout = useLogout();
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 text-center">
       <motion.div
@@ -13,22 +19,17 @@ export function HomePage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
-        <h1 className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-5xl font-bold text-transparent">
-          Nosotros
+        <h1 className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-4xl font-bold text-transparent">
+          Hola, {user?.name ?? 'de nuevo'} 👋
         </h1>
         <p className="mt-4 max-w-md text-neutral-500 dark:text-neutral-400">
-          Nuestro rincón de recuerdos. La fundación del proyecto está lista.
+          Tu sesión está activa. Aquí vivirá el feed de álbumes y recuerdos.
         </p>
       </motion.div>
 
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        className="rounded-full bg-accent/10 px-4 py-1 text-sm font-medium text-accent"
-      >
-        Fase 0 · Esqueleto operativo
-      </motion.span>
+      <Button variant="ghost" onClick={() => logout.mutate()} loading={logout.isPending}>
+        Cerrar sesión
+      </Button>
     </main>
   );
 }
