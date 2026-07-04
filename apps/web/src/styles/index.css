@@ -23,3 +23,11 @@ body {
   @apply bg-surface text-neutral-900 antialiased dark:text-neutral-100;
   font-family: var(--font-sans);
 }
+
+/* Cuando el usuario desactiva las animaciones en Ajustes. */
+.no-animations *,
+.no-animations *::before,
+.no-animations *::after {
+  transition: none !important;
+  animation: none !important;
+}

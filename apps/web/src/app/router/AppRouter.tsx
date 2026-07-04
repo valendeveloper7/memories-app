@@ -9,6 +9,7 @@ import { TimelinePage } from '@/features/timeline/pages/TimelinePage';
 import { SearchPage } from '@/features/search/pages/SearchPage';
 import { StatsPage } from '@/features/stats/pages/StatsPage';
 import { CalendarPage } from '@/features/stats/pages/CalendarPage';
+import { SettingsPage } from '@/features/settings/pages/SettingsPage';
 import {
   NoSpaceRoute,
   ProtectedRoute,
@@ -43,6 +44,7 @@ export function AppRouter() {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/stats" element={<StatsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
           </Route>
         </Route>
       </Route>

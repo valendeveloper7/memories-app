@@ -15,3 +15,4 @@ export * from './schemas/album.schema.js';
 export * from './schemas/upload.schema.js';
 export * from './schemas/memory.schema.js';
 export * from './schemas/comment.schema.js';
+export * from './schemas/user.schema.js';

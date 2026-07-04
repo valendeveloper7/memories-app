@@ -2,6 +2,13 @@ import { type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '@/features/auth/components/AuthProvider';
+import { useApplyTheme } from '@/features/settings/hooks/useApplyTheme';
+
+/** Aplica las preferencias de tema al DOM. Sin render propio. */
+function ThemeApplier() {
+  useApplyTheme();
+  return null;
+}
 
 /**
  * Agrupa todos los providers globales (React Query, Router, y más adelante
@@ -21,6 +28,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <ThemeApplier />
         <AuthProvider>{children}</AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
