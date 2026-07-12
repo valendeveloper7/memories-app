@@ -3,18 +3,20 @@ import type { ListMemoriesQuery, MemoryType } from 'shared';
 import { TextField } from '@/components/ui/TextField';
 import { MemoryGrid } from '@/features/memories/components/MemoryGrid';
 import { useDebounce } from '@/hooks/useDebounce';
-
-const TYPE_FILTERS: { label: string; value?: MemoryType }[] = [
-  { label: 'Todo' },
-  { label: 'Fotos', value: 'photo' },
-  { label: 'Vídeos', value: 'video' },
-];
+import { useI18n } from '@/i18n/useI18n';
 
 export function SearchPage() {
   const [text, setText] = useState('');
   const [type, setType] = useState<MemoryType | undefined>();
   const [onlyFavorites, setOnlyFavorites] = useState(false);
   const debouncedText = useDebounce(text);
+  const { t } = useI18n();
+
+  const typeFilters: { label: string; value?: MemoryType }[] = [
+    { label: t('search.all') },
+    { label: t('search.photos'), value: 'photo' },
+    { label: t('search.videos'), value: 'video' },
+  ];
 
   const query: Omit<ListMemoriesQuery, 'cursor'> = {
     ...(debouncedText ? { q: debouncedText } : {}),
@@ -24,19 +26,21 @@ export function SearchPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-neutral-900 dark:text-neutral-100">Buscar</h1>
+      <h1 className="mb-6 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+        {t('search.title')}
+      </h1>
 
       <div className="mb-4">
         <TextField
           label=""
-          placeholder="Busca por título o descripción…"
+          placeholder={t('search.placeholder')}
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
       </div>
 
       <div className="mb-6 flex flex-wrap gap-2">
-        {TYPE_FILTERS.map((filter) => (
+        {typeFilters.map((filter) => (
           <Chip
             key={filter.label}
             active={type === filter.value}
@@ -46,11 +50,11 @@ export function SearchPage() {
           </Chip>
         ))}
         <Chip active={onlyFavorites} onClick={() => setOnlyFavorites((v) => !v)}>
-          ❤️ Favoritos
+          {t('search.favorites')}
         </Chip>
       </div>
 
-      <MemoryGrid query={query} emptyLabel="No hay recuerdos que coincidan con la búsqueda." />
+      <MemoryGrid query={query} emptyLabel={t('search.empty')} />
     </div>
   );
 }

@@ -1,11 +1,13 @@
 import { useRef, useState, type DragEvent } from 'react';
 import { motion } from 'framer-motion';
 import { useUploadMemory } from '../hooks/useUploadMemory';
+import { useI18n } from '@/i18n/useI18n';
 
 /** Zona de subida con drag & drop y selección de archivos. Muestra el progreso
  *  de cada archivo mientras sube a Cloudinary. */
 export function MemoryUploader({ albumId }: { albumId?: string }) {
   const { upload, items } = useUploadMemory(albumId);
+  const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
@@ -33,7 +35,7 @@ export function MemoryUploader({ albumId }: { albumId?: string }) {
       >
         <span className="text-3xl">⬆️</span>
         <p className="mt-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          Arrastra fotos o vídeos aquí, o haz clic para elegir
+          {t('uploader.drop')}
         </p>
         <input
           ref={inputRef}
@@ -59,7 +61,7 @@ export function MemoryUploader({ albumId }: { albumId?: string }) {
                 />
               </div>
               <span className="w-16 text-right text-xs text-neutral-400">
-                {item.status === 'error' ? 'Error' : `${item.progress}%`}
+                {item.status === 'error' ? t('uploader.error') : `${item.progress}%`}
               </span>
             </div>
           ))}

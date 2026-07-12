@@ -1,6 +1,8 @@
 import type { ThemeMode, UserPreferences } from 'shared';
 import { DEFAULT_USER_PREFERENCES } from 'shared';
 import { useAuthStore } from '@/features/auth/store/authStore';
+import { useI18n } from '@/i18n/useI18n';
+import { LANGUAGES } from '@/i18n/translations';
 import { useUpdatePreferences } from '../hooks/usePreferences';
 
 const FONTS = ['Inter', 'system-ui', 'Georgia', 'Poppins', 'Nunito'];
@@ -8,6 +10,7 @@ const FONTS = ['Inter', 'system-ui', 'Georgia', 'Poppins', 'Nunito'];
 export function SettingsPage() {
   const prefs = useAuthStore((s) => s.user?.preferences) ?? DEFAULT_USER_PREFERENCES;
   const update = useUpdatePreferences();
+  const { t, language, setLanguage } = useI18n();
 
   function set<K extends keyof UserPreferences>(key: K, value: UserPreferences[K]) {
     update.mutate({ [key]: value });
@@ -15,44 +18,64 @@ export function SettingsPage() {
 
   return (
     <div className="max-w-xl">
-      <h1 className="mb-6 text-2xl font-bold text-neutral-900 dark:text-neutral-100">Ajustes</h1>
+      <h1 className="mb-6 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+        {t('settings.title')}
+      </h1>
 
       <div className="space-y-6">
-        <Section title="Tema">
+        <Section title={t('settings.language')}>
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as (typeof LANGUAGES)[number]['code'])}
+            className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+          >
+            {LANGUAGES.map((lang) => (
+              <option key={lang.code} value={lang.code}>
+                {lang.label}
+              </option>
+            ))}
+          </select>
+        </Section>
+
+        <Section title={t('settings.theme')}>
           <div className="flex gap-2">
             {(['light', 'dark', 'system'] as ThemeMode[]).map((mode) => (
               <button
                 key={mode}
                 type="button"
                 onClick={() => set('theme', mode)}
-                className={`flex-1 rounded-xl border px-4 py-2 text-sm font-medium capitalize transition-colors ${
+                className={`flex-1 rounded-xl border px-4 py-2 text-sm font-medium transition-colors ${
                   prefs.theme === mode
                     ? 'border-accent bg-accent/10 text-accent'
                     : 'border-neutral-200 text-neutral-600 dark:border-neutral-700 dark:text-neutral-300'
                 }`}
               >
-                {mode === 'light' ? 'Claro' : mode === 'dark' ? 'Oscuro' : 'Sistema'}
+                {mode === 'light'
+                  ? t('settings.light')
+                  : mode === 'dark'
+                    ? t('settings.dark')
+                    : t('settings.system')}
               </button>
             ))}
           </div>
         </Section>
 
-        <Section title="Colores">
+        <Section title={t('settings.colors')}>
           <div className="flex gap-6">
             <ColorField
-              label="Principal"
+              label={t('settings.primary')}
               value={prefs.accentColor}
               onChange={(v) => set('accentColor', v)}
             />
             <ColorField
-              label="Secundario"
+              label={t('settings.secondary')}
               value={prefs.secondaryColor}
               onChange={(v) => set('secondaryColor', v)}
             />
           </div>
         </Section>
 
-        <Section title="Tipografía">
+        <Section title={t('settings.typography')}>
           <select
             value={prefs.fontFamily}
             onChange={(e) => set('fontFamily', e.target.value)}
@@ -66,33 +89,33 @@ export function SettingsPage() {
           </select>
         </Section>
 
-        <Section title="Bordes">
+        <Section title={t('settings.borders')}>
           <select
             value={prefs.borderRadius}
             onChange={(e) => set('borderRadius', e.target.value as UserPreferences['borderRadius'])}
             className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
           >
-            <option value="none">Rectos</option>
-            <option value="sm">Suaves</option>
-            <option value="md">Medios</option>
-            <option value="lg">Redondeados</option>
-            <option value="full">Muy redondeados</option>
+            <option value="none">{t('settings.radiusNone')}</option>
+            <option value="sm">{t('settings.radiusSm')}</option>
+            <option value="md">{t('settings.radiusMd')}</option>
+            <option value="lg">{t('settings.radiusLg')}</option>
+            <option value="full">{t('settings.radiusFull')}</option>
           </select>
         </Section>
 
-        <Section title="Densidad">
+        <Section title={t('settings.density')}>
           <select
             value={prefs.density}
             onChange={(e) => set('density', e.target.value as UserPreferences['density'])}
             className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
           >
-            <option value="compact">Compacta</option>
-            <option value="comfortable">Cómoda</option>
-            <option value="spacious">Espaciosa</option>
+            <option value="compact">{t('settings.densityCompact')}</option>
+            <option value="comfortable">{t('settings.densityComfortable')}</option>
+            <option value="spacious">{t('settings.densitySpacious')}</option>
           </select>
         </Section>
 
-        <Section title="Animaciones">
+        <Section title={t('settings.animations')}>
           <label className="flex items-center gap-3 text-sm text-neutral-600 dark:text-neutral-300">
             <input
               type="checkbox"
@@ -100,7 +123,7 @@ export function SettingsPage() {
               onChange={(e) => set('animationsEnabled', e.target.checked)}
               className="h-4 w-4 accent-accent"
             />
-            Activar microanimaciones
+            {t('settings.enableAnimations')}
           </label>
         </Section>
       </div>

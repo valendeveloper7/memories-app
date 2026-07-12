@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { useI18n } from '@/i18n/useI18n';
 import { useAlbums } from '../hooks/useAlbums';
 import { AlbumCard } from '../components/AlbumCard';
 import { CreateAlbumModal } from '../components/CreateAlbumModal';
@@ -9,6 +10,7 @@ import { CreateAlbumModal } from '../components/CreateAlbumModal';
 export function AlbumsListPage() {
   const [onlyFavorites, setOnlyFavorites] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const { t } = useI18n();
   const { data: albums, isLoading } = useAlbums(
     onlyFavorites ? { favorite: 'true' } : undefined,
   );
@@ -17,20 +19,20 @@ export function AlbumsListPage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Álbumes</h1>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            Vuestros recuerdos, organizados.
-          </p>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+            {t('albums.title')}
+          </h1>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">{t('albums.subtitle')}</p>
         </div>
-        <Button onClick={() => setModalOpen(true)}>+ Nuevo álbum</Button>
+        <Button onClick={() => setModalOpen(true)}>{t('albums.new')}</Button>
       </div>
 
       <div className="mb-4 flex gap-2">
         <FilterChip active={!onlyFavorites} onClick={() => setOnlyFavorites(false)}>
-          Todos
+          {t('albums.all')}
         </FilterChip>
         <FilterChip active={onlyFavorites} onClick={() => setOnlyFavorites(true)}>
-          ❤️ Favoritos
+          {t('albums.favorites')}
         </FilterChip>
       </div>
 
@@ -49,7 +51,11 @@ export function AlbumsListPage() {
           </AnimatePresence>
         </div>
       ) : (
-        <EmptyState onCreate={() => setModalOpen(true)} favoritesFilter={onlyFavorites} />
+        <EmptyState
+          onCreate={() => setModalOpen(true)}
+          favoritesFilter={onlyFavorites}
+          t={t}
+        />
       )}
 
       <CreateAlbumModal open={modalOpen} onClose={() => setModalOpen(false)} />
@@ -84,22 +90,24 @@ function FilterChip({
 function EmptyState({
   onCreate,
   favoritesFilter,
+  t,
 }: {
   onCreate: () => void;
   favoritesFilter: boolean;
+  t: (key: string) => string;
 }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-neutral-300 py-16 text-center dark:border-neutral-700">
       <span className="text-5xl">📷</span>
       <p className="mt-4 font-medium text-neutral-700 dark:text-neutral-300">
-        {favoritesFilter ? 'Aún no hay álbumes favoritos' : 'Todavía no hay álbumes'}
+        {favoritesFilter ? t('albums.emptyFavorites') : t('albums.emptyTitle')}
       </p>
       <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-        Crea el primero para empezar a guardar recuerdos.
+        {t('albums.emptySubtitle')}
       </p>
       {!favoritesFilter && (
         <Button className="mt-4" onClick={onCreate}>
-          Crear álbum
+          {t('albums.createBtn')}
         </Button>
       )}
     </div>

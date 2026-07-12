@@ -5,11 +5,13 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { useMemories } from '@/features/memories/hooks/useMemories';
 import { MemoryCard } from '@/features/memories/components/MemoryCard';
 import { OnThisDayBanner } from '@/features/memories/components/OnThisDayBanner';
+import { useI18n } from '@/i18n/useI18n';
 
 /** Línea temporal vertical: recuerdos agrupados por año, con scroll infinito.
  *  Al hacer scroll se percibe el paso del tiempo (cada año es una sección). */
 export function TimelinePage() {
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useMemories();
+  const { t } = useI18n();
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,12 +48,14 @@ export function TimelinePage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-neutral-900 dark:text-neutral-100">Timeline</h1>
+      <h1 className="mb-6 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+        {t('timeline.title')}
+      </h1>
       <OnThisDayBanner />
 
       {groups.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-neutral-300 py-12 text-center text-sm text-neutral-500 dark:border-neutral-700">
-          Aún no hay recuerdos. Sube fotos en tus álbumes y aparecerán aquí.
+          {t('timeline.empty')}
         </div>
       ) : (
         <div className="relative border-l-2 border-neutral-200 pl-6 dark:border-neutral-800">
@@ -78,7 +82,7 @@ export function TimelinePage() {
 
       <div ref={sentinelRef} className="h-10" />
       {isFetchingNextPage && (
-        <p className="py-4 text-center text-sm text-neutral-400">Cargando más…</p>
+        <p className="py-4 text-center text-sm text-neutral-400">{t('common.loadingMore')}</p>
       )}
     </div>
   );

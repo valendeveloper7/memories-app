@@ -4,12 +4,14 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/TextField';
 import { getApiErrorMessage } from '@/features/auth/hooks/useAuth';
+import { useI18n } from '@/i18n/useI18n';
 import { useCreateAlbum } from '../hooks/useAlbums';
 
 /** Modal para crear un álbum. Valida con el esquema zod compartido y separa
  *  los tags escritos por comas. */
 export function CreateAlbumModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const createAlbum = useCreateAlbum();
+  const { t } = useI18n();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -39,28 +41,37 @@ export function CreateAlbumModal({ open, onClose }: { open: boolean; onClose: ()
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Nuevo álbum">
+    <Modal open={open} onClose={onClose} title={t('albumForm.title')}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
-        <TextField label="Título" name="title" placeholder="Ej. Verano 2024" error={errors.title} />
         <TextField
-          label="Descripción (opcional)"
+          label={t('albumForm.titleField')}
+          name="title"
+          placeholder={t('albumForm.titlePlaceholder')}
+          error={errors.title}
+        />
+        <TextField
+          label={t('albumForm.description')}
           name="description"
-          placeholder="Un pequeño recuerdo de…"
+          placeholder={t('albumForm.descriptionPlaceholder')}
           error={errors.description}
         />
         <div className="grid grid-cols-2 gap-3">
-          <TextField label="Icono (emoji)" name="icon" placeholder="🌅" />
-          <TextField label="Tags (separadas por comas)" name="tags" placeholder="playa, sol" />
+          <TextField label={t('albumForm.icon')} name="icon" placeholder="🌅" />
+          <TextField
+            label={t('albumForm.tags')}
+            name="tags"
+            placeholder={t('albumForm.tagsPlaceholder')}
+          />
         </div>
         {createAlbum.isError && (
           <p className="text-sm text-red-500">{getApiErrorMessage(createAlbum.error)}</p>
         )}
         <div className="mt-2 flex justify-end gap-2">
           <Button type="button" variant="ghost" onClick={onClose}>
-            Cancelar
+            {t('common.cancel')}
           </Button>
           <Button type="submit" loading={createAlbum.isPending}>
-            Crear
+            {t('common.create')}
           </Button>
         </div>
       </form>

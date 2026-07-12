@@ -5,12 +5,14 @@ import { createSpaceSchema, joinSpaceSchema } from 'shared';
 import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/TextField';
 import { getApiErrorMessage } from '@/features/auth/hooks/useAuth';
+import { useI18n } from '@/i18n/useI18n';
 import { useCreateSpace, useJoinSpace } from '../hooks/useSpaces';
 
 type Tab = 'create' | 'join';
 
 export function OnboardingPage() {
   const [tab, setTab] = useState<Tab>('create');
+  const { t } = useI18n();
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-accent/5 to-secondary/5 px-4">
@@ -22,19 +24,19 @@ export function OnboardingPage() {
       >
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-            Vuestro espacio
+            {t('onboarding.title')}
           </h1>
           <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-            Crea vuestro rincón o únete al de tu pareja
+            {t('onboarding.subtitle')}
           </p>
         </div>
 
         <div className="mb-6 flex rounded-xl bg-neutral-100 p-1 dark:bg-neutral-800">
           <TabButton active={tab === 'create'} onClick={() => setTab('create')}>
-            Crear
+            {t('onboarding.createTab')}
           </TabButton>
           <TabButton active={tab === 'join'} onClick={() => setTab('join')}>
-            Unirme
+            {t('onboarding.joinTab')}
           </TabButton>
         </div>
 
@@ -71,6 +73,7 @@ function TabButton({
 function CreateForm() {
   const createSpace = useCreateSpace();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -96,17 +99,17 @@ function CreateForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
       <TextField
-        label="Nombre del espacio"
+        label={t('onboarding.spaceName')}
         name="name"
-        placeholder="Ej. Ana & Luis"
+        placeholder={t('onboarding.spaceNamePlaceholder')}
         error={errors.name}
       />
-      <TextField label="Fecha de aniversario (opcional)" name="anniversaryDate" type="date" />
+      <TextField label={t('onboarding.anniversary')} name="anniversaryDate" type="date" />
       {createSpace.isError && (
         <p className="text-sm text-red-500">{getApiErrorMessage(createSpace.error)}</p>
       )}
       <Button type="submit" loading={createSpace.isPending} className="mt-2 w-full">
-        Crear espacio
+        {t('onboarding.createSpace')}
       </Button>
     </form>
   );
@@ -115,6 +118,7 @@ function CreateForm() {
 function JoinForm() {
   const joinSpace = useJoinSpace();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [error, setError] = useState<string>();
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -132,9 +136,9 @@ function JoinForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
       <TextField
-        label="Código de invitación"
+        label={t('onboarding.inviteCode')}
         name="inviteCode"
-        placeholder="Ej. ABCD2345"
+        placeholder={t('onboarding.inviteCodePlaceholder')}
         autoCapitalize="characters"
         error={error}
       />
@@ -142,7 +146,7 @@ function JoinForm() {
         <p className="text-sm text-red-500">{getApiErrorMessage(joinSpace.error)}</p>
       )}
       <Button type="submit" loading={joinSpace.isPending} className="mt-2 w-full">
-        Unirme
+        {t('onboarding.join')}
       </Button>
     </form>
   );

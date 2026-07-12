@@ -4,17 +4,19 @@ import type { PublicMemory } from 'shared';
 import { cloudinaryThumb } from '@/utils/cloudinary';
 import { useDeleteMemory, useToggleMemoryFavorite } from '../hooks/useMemories';
 import { MemoryLightbox } from './MemoryLightbox';
+import { useI18n } from '@/i18n/useI18n';
 
 /** Miniatura de un recuerdo en la cuadrícula. Foto o vídeo, con acciones
  *  rápidas de favorito y borrado. Al hacer clic abre el lightbox. */
 export function MemoryCard({ memory }: { memory: PublicMemory }) {
   const deleteMemory = useDeleteMemory();
   const toggleFavorite = useToggleMemoryFavorite();
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
 
   function handleDelete(event: React.MouseEvent) {
     event.stopPropagation();
-    if (window.confirm('¿Eliminar este recuerdo?')) deleteMemory.mutate(memory.id);
+    if (window.confirm(t('memory.deleteConfirm'))) deleteMemory.mutate(memory.id);
   }
 
   function handleFavorite(event: React.MouseEvent) {

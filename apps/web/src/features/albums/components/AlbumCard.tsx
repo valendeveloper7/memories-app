@@ -2,11 +2,13 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import type { PublicAlbum } from 'shared';
 import { useUpdateAlbum, useDeleteAlbum } from '../hooks/useAlbums';
+import { useI18n } from '@/i18n/useI18n';
 
 /** Tarjeta de un álbum en la cuadrícula. Portada por color/imagen, con acciones
  *  rápidas de favorito y borrado. */
 export function AlbumCard({ album }: { album: PublicAlbum }) {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const updateAlbum = useUpdateAlbum();
   const deleteAlbum = useDeleteAlbum();
 
@@ -21,7 +23,7 @@ export function AlbumCard({ album }: { album: PublicAlbum }) {
 
   function handleDelete(event: React.MouseEvent) {
     event.stopPropagation();
-    if (window.confirm(`¿Eliminar el álbum "${album.title}"?`)) {
+    if (window.confirm(t('albums.deleteConfirm', { title: album.title }))) {
       deleteAlbum.mutate(album.id);
     }
   }

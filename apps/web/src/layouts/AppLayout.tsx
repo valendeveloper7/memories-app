@@ -6,22 +6,24 @@ import { useMySpace } from '@/features/spaces/hooks/useSpaces';
 import { useRealtimeNotifications } from '@/features/notifications/hooks/useNotifications';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { Button } from '@/components/ui/Button';
-
-const NAV_ITEMS = [
-  { to: '/', label: 'Álbumes', end: true },
-  { to: '/timeline', label: 'Timeline' },
-  { to: '/calendar', label: 'Calendario' },
-  { to: '/search', label: 'Buscar' },
-  { to: '/stats', label: 'Estadísticas' },
-  { to: '/settings', label: 'Ajustes' },
-];
+import { useI18n } from '@/i18n/useI18n';
 
 /** Marco común de la app autenticada: cabecera con navegación + contenido. */
 export function AppLayout() {
   const user = useAuthStore((s) => s.user);
   const logout = useLogout();
   const { data: space } = useMySpace();
+  const { t } = useI18n();
   const waitingForPartner = space ? space.members.length < MAX_SPACE_MEMBERS : false;
+
+  const navItems = [
+    { to: '/', label: t('nav.albums'), end: true },
+    { to: '/timeline', label: t('nav.timeline') },
+    { to: '/calendar', label: t('nav.calendar') },
+    { to: '/search', label: t('nav.search') },
+    { to: '/stats', label: t('nav.stats') },
+    { to: '/settings', label: t('nav.settings') },
+  ];
 
   useRealtimeNotifications();
 
@@ -35,7 +37,7 @@ export function AppLayout() {
             </span>
             {waitingForPartner && space && (
               <span className="rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent">
-                Código: {space.inviteCode}
+                {t('header.code')}: {space.inviteCode}
               </span>
             )}
           </div>
@@ -45,13 +47,13 @@ export function AppLayout() {
               {user?.name}
             </span>
             <Button variant="ghost" onClick={() => logout.mutate()} loading={logout.isPending}>
-              Salir
+              {t('common.logout')}
             </Button>
           </div>
         </div>
 
         <nav className="mx-auto flex max-w-5xl gap-1 overflow-x-auto px-2 pb-2">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}

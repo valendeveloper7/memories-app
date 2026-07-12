@@ -3,15 +3,14 @@ import type { ReactNode } from 'react';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useHeatmap, useOverview } from '../hooks/useStats';
 import { ActivityHeatmap } from '../components/ActivityHeatmap';
-
-const MONTHS = [
-  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-  'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
-];
+import { useI18n } from '@/i18n/useI18n';
 
 export function StatsPage() {
   const { data: overview, isLoading } = useOverview();
   const { data: heatmap } = useHeatmap();
+  const { t, locale } = useI18n();
+  const monthName = (month: number) =>
+    new Intl.DateTimeFormat(locale, { month: 'long' }).format(new Date(2000, month - 1, 1));
 
   if (isLoading || !overview) {
     return (
@@ -26,40 +25,43 @@ export function StatsPage() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-        Estadísticas
+        {t('stats.title')}
       </h1>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatTile label="Recuerdos" value={overview.totalMemories} icon="📸" />
-        <StatTile label="Fotos" value={overview.photos} icon="🖼️" />
-        <StatTile label="Vídeos" value={overview.videos} icon="🎬" />
-        <StatTile label="Álbumes" value={overview.albums} icon="📚" />
-        <StatTile label="Años" value={overview.yearsRegistered} icon="📅" />
+        <StatTile label={t('stats.memories')} value={overview.totalMemories} icon="📸" />
+        <StatTile label={t('stats.photos')} value={overview.photos} icon="🖼️" />
+        <StatTile label={t('stats.videos')} value={overview.videos} icon="🎬" />
+        <StatTile label={t('stats.albums')} value={overview.albums} icon="📚" />
+        <StatTile label={t('stats.years')} value={overview.yearsRegistered} icon="📅" />
         {overview.daysTogether !== undefined && (
-          <StatTile label="Días juntos" value={overview.daysTogether} icon="❤️" />
+          <StatTile label={t('stats.daysTogether')} value={overview.daysTogether} icon="❤️" />
         )}
         {overview.favoriteMonth && (
-          <StatTile label="Mes favorito" value={MONTHS[overview.favoriteMonth.month - 1]} icon="⭐" />
+          <StatTile
+            label={t('stats.favMonth')}
+            value={monthName(overview.favoriteMonth.month)}
+            icon="⭐"
+          />
         )}
         {overview.topLocation && (
-          <StatTile label="Lugar top" value={overview.topLocation} icon="📍" />
+          <StatTile label={t('stats.topPlace')} value={overview.topLocation} icon="📍" />
         )}
       </div>
 
       {overview.busiestDay && (
         <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
-          📈 El día con más recuerdos fue el{' '}
-          <span className="font-semibold text-accent">
-            {new Date(overview.busiestDay.date).toLocaleDateString('es-ES')}
-          </span>{' '}
-          con {overview.busiestDay.count} recuerdos.
+          {t('stats.busiestDay', {
+            date: new Date(overview.busiestDay.date).toLocaleDateString(locale),
+            count: overview.busiestDay.count,
+          })}
         </p>
       )}
 
       {heatmap && (
         <section className="mt-8">
           <h2 className="mb-3 font-semibold text-neutral-700 dark:text-neutral-300">
-            Actividad del último año
+            {t('stats.activityLastYear')}
           </h2>
           <ActivityHeatmap cells={heatmap} />
         </section>

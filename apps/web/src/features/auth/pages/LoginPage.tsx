@@ -5,9 +5,11 @@ import { AuthLayout } from '../components/AuthLayout';
 import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/TextField';
 import { getApiErrorMessage, useLogin } from '../hooks/useAuth';
+import { useI18n } from '@/i18n/useI18n';
 
 export function LoginPage() {
   const login = useLogin();
+  const { t } = useI18n();
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -29,20 +31,20 @@ export function LoginPage() {
 
   return (
     <AuthLayout
-      title="Nosotros"
-      subtitle="Entra en nuestro rincón de recuerdos"
+      title={t('auth.loginTitle')}
+      subtitle={t('auth.loginSubtitle')}
       footer={
         <>
-          ¿Aún no tenéis cuenta?{' '}
+          {t('auth.noAccount')}{' '}
           <Link to="/register" className="font-semibold text-accent hover:underline">
-            Crear una
+            {t('auth.createOne')}
           </Link>
         </>
       }
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
         <TextField
-          label="Email"
+          label={t('auth.email')}
           name="email"
           type="email"
           autoComplete="email"
@@ -50,18 +52,18 @@ export function LoginPage() {
           error={fieldErrors.email}
         />
         <TextField
-          label="Contraseña"
+          label={t('auth.password')}
           name="password"
           type="password"
           autoComplete="current-password"
-          placeholder="••••••••"
+          placeholder={t('auth.passwordPlaceholder')}
           error={fieldErrors.password}
         />
         {login.isError && (
           <p className="text-sm text-red-500">{getApiErrorMessage(login.error)}</p>
         )}
         <Button type="submit" loading={login.isPending} className="mt-2 w-full">
-          Entrar
+          {t('auth.enter')}
         </Button>
       </form>
     </AuthLayout>

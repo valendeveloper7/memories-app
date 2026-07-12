@@ -8,6 +8,7 @@ import { MemoryUploader } from '@/features/memories/components/MemoryUploader';
 import { MemoryGrid } from '@/features/memories/components/MemoryGrid';
 import { MemoryCard } from '@/features/memories/components/MemoryCard';
 import { CreateNoteModal } from '@/features/memories/components/CreateNoteModal';
+import { useI18n } from '@/i18n/useI18n';
 import { useAlbum } from '../hooks/useAlbums';
 import { useAlbumMemories } from '../hooks/useAlbumMemories';
 import { AlbumEditor } from '../components/editor/AlbumEditor';
@@ -16,6 +17,7 @@ export function AlbumDetailPage() {
   const { id = '' } = useParams();
   const { data: album, isLoading } = useAlbum(id);
   const { data: memories } = useAlbumMemories(id);
+  const { t } = useI18n();
   const [editing, setEditing] = useState(false);
   const [noteOpen, setNoteOpen] = useState(false);
 
@@ -33,7 +35,7 @@ export function AlbumDetailPage() {
         to="/"
         className="mb-4 inline-flex items-center gap-1 text-sm text-neutral-500 hover:text-accent dark:text-neutral-400"
       >
-        ← Álbumes
+        ← {t('common.back')}
       </Link>
 
       {isLoading ? (
@@ -55,11 +57,11 @@ export function AlbumDetailPage() {
           </div>
           <div className="flex gap-2">
             <Button variant="ghost" onClick={() => setNoteOpen(true)}>
-              📝 Nota
+              {t('albumDetail.note')}
             </Button>
             {memories && memories.length > 0 && (
               <Button variant="ghost" onClick={() => setEditing(true)}>
-                🎨 Editar diseño
+                {t('albumDetail.editDesign')}
               </Button>
             )}
           </div>
@@ -78,10 +80,10 @@ export function AlbumDetailPage() {
             <section className="mt-8">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                  Sin colocar en el diseño ({unplaced.length})
+                  {t('albumDetail.unplaced', { count: unplaced.length })}
                 </h2>
                 <Button variant="ghost" onClick={() => setEditing(true)}>
-                  Añadir al diseño
+                  {t('albumDetail.addToDesign')}
                 </Button>
               </div>
               <div className="grid auto-rows-[160px] grid-cols-2 gap-3 sm:grid-cols-4">
@@ -93,10 +95,7 @@ export function AlbumDetailPage() {
           )}
         </>
       ) : (
-        <MemoryGrid
-          query={{ albumId: id }}
-          emptyLabel="Sube la primera foto o vídeo a este álbum."
-        />
+        <MemoryGrid query={{ albumId: id }} emptyLabel={t('albumDetail.empty')} />
       )}
 
       {editing && album && memories && (

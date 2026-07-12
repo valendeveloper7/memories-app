@@ -4,16 +4,18 @@ import type { ListMemoriesQuery } from 'shared';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useMemories } from '../hooks/useMemories';
 import { MemoryCard } from './MemoryCard';
+import { useI18n } from '@/i18n/useI18n';
 
 /** Cuadrícula de recuerdos con scroll infinito (cursor). Un observador al final
  *  dispara la carga de la siguiente página. */
 export function MemoryGrid({
   query,
-  emptyLabel = 'Todavía no hay recuerdos aquí.',
+  emptyLabel,
 }: {
   query?: Omit<ListMemoriesQuery, 'cursor'>;
   emptyLabel?: string;
 }) {
+  const { t } = useI18n();
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useMemories(query);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -42,7 +44,7 @@ export function MemoryGrid({
   if (memories.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-neutral-300 py-12 text-center text-sm text-neutral-500 dark:border-neutral-700 dark:text-neutral-400">
-        {emptyLabel}
+        {emptyLabel ?? t('memory.emptyGrid')}
       </div>
     );
   }
@@ -58,7 +60,7 @@ export function MemoryGrid({
       </div>
       <div ref={sentinelRef} className="h-10" />
       {isFetchingNextPage && (
-        <p className="py-4 text-center text-sm text-neutral-400">Cargando más…</p>
+        <p className="py-4 text-center text-sm text-neutral-400">{t('common.loadingMore')}</p>
       )}
     </>
   );

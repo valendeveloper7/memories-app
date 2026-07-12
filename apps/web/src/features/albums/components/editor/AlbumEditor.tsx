@@ -3,6 +3,7 @@ import type { AlbumLayoutItem, PublicAlbum, PublicMemory } from 'shared';
 import { cloudinaryThumb } from '@/utils/cloudinary';
 import { Button } from '@/components/ui/Button';
 import { getApiErrorMessage } from '@/features/auth/hooks/useAuth';
+import { useI18n } from '@/i18n/useI18n';
 import { useUpdateLayout } from '../../hooks/useAlbums';
 import { GRID_COLS, useCanvasLayout } from './useCanvasLayout';
 
@@ -59,6 +60,7 @@ export function AlbumEditor({
   const { items, selectedId, setSelectedId, update, startDrag, startResize } =
     useCanvasLayout(initial);
   const saveLayout = useUpdateLayout(album.id);
+  const { t } = useI18n();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [cell, setCell] = useState(60);
@@ -101,30 +103,30 @@ export function AlbumEditor({
     <div className="fixed inset-0 z-50 flex flex-col bg-surface">
       <header className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
         <span className="font-semibold text-neutral-900 dark:text-neutral-100">
-          Editando: {album.title}
+          {t('editor.editing', { title: album.title })}
         </span>
         <div className="flex items-center gap-2">
           {selected && (
             <div className="mr-2 flex items-center gap-1">
-              <IconBtn onClick={() => rotate(-5)} label="Rotar izquierda">
+              <IconBtn onClick={() => rotate(-5)} label={t('editor.rotateLeft')}>
                 ↺
               </IconBtn>
-              <IconBtn onClick={() => rotate(5)} label="Rotar derecha">
+              <IconBtn onClick={() => rotate(5)} label={t('editor.rotateRight')}>
                 ↻
               </IconBtn>
-              <IconBtn onClick={bringToFront} label="Traer al frente">
+              <IconBtn onClick={bringToFront} label={t('editor.front')}>
                 ⬆️
               </IconBtn>
-              <IconBtn onClick={toggleLock} label="Bloquear">
+              <IconBtn onClick={toggleLock} label={t('editor.lock')}>
                 {selected.locked ? '🔒' : '🔓'}
               </IconBtn>
             </div>
           )}
           <Button variant="ghost" onClick={onClose}>
-            Cancelar
+            {t('editor.cancel')}
           </Button>
           <Button onClick={save} loading={saveLayout.isPending}>
-            Guardar diseño
+            {t('editor.save')}
           </Button>
         </div>
       </header>

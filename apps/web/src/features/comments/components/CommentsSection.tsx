@@ -3,6 +3,7 @@ import type { CommentTargetType } from 'shared';
 import { useAuthStore } from '@/features/auth/store/authStore';
 import { Button } from '@/components/ui/Button';
 import { useComments, useCreateComment, useDeleteComment } from '../hooks/useComments';
+import { useI18n } from '@/i18n/useI18n';
 
 /** Lista de comentarios de un objetivo + campo para añadir uno nuevo. */
 export function CommentsSection({
@@ -13,6 +14,7 @@ export function CommentsSection({
   targetId: string;
 }) {
   const currentUserId = useAuthStore((s) => s.user?.id);
+  const { t } = useI18n();
   const { data: comments } = useComments(targetType, targetId);
   const createComment = useCreateComment(targetType, targetId);
   const deleteComment = useDeleteComment(targetType, targetId);
@@ -28,12 +30,12 @@ export function CommentsSection({
   return (
     <div className="flex h-full flex-col">
       <h3 className="mb-3 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-        Comentarios {comments && comments.length > 0 && `(${comments.length})`}
+        {t('comments.title')} {comments && comments.length > 0 && `(${comments.length})`}
       </h3>
 
       <div className="flex-1 space-y-3 overflow-y-auto">
         {comments?.length === 0 && (
-          <p className="text-sm text-neutral-400">Sé el primero en comentar.</p>
+          <p className="text-sm text-neutral-400">{t('comments.empty')}</p>
         )}
         {comments?.map((comment) => (
           <div key={comment.id} className="group flex gap-2">
@@ -51,7 +53,7 @@ export function CommentsSection({
                     onClick={() => deleteComment.mutate(comment.id)}
                     className="text-xs text-neutral-400 opacity-0 transition-opacity hover:text-red-500 group-hover:opacity-100"
                   >
-                    borrar
+                    {t('comments.deleteAction')}
                   </button>
                 )}
               </div>
@@ -65,11 +67,11 @@ export function CommentsSection({
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Escribe un comentario…"
+          placeholder={t('comments.placeholder')}
           className="flex-1 rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-neutral-700 dark:bg-neutral-900"
         />
         <Button type="submit" loading={createComment.isPending}>
-          Enviar
+          {t('common.send')}
         </Button>
       </form>
     </div>

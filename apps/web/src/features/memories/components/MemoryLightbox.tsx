@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import type { PublicMemory } from 'shared';
 import { ReactionBar } from '@/features/reactions/components/ReactionBar';
 import { CommentsSection } from '@/features/comments/components/CommentsSection';
+import { useI18n } from '@/i18n/useI18n';
 
 /** Vista ampliada de un recuerdo: media a gran tamaño, fecha, reacciones y
  *  comentarios en un panel lateral. Cierra con Escape o clic en el fondo. */
@@ -13,6 +14,8 @@ export function MemoryLightbox({
   memory: PublicMemory | null;
   onClose: () => void;
 }) {
+  const { locale } = useI18n();
+
   useEffect(() => {
     if (!memory) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -57,7 +60,7 @@ export function MemoryLightbox({
                   </h2>
                 )}
                 <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                  {new Date(memory.actualDate).toLocaleDateString('es-ES', {
+                  {new Date(memory.actualDate).toLocaleDateString(locale, {
                     day: 'numeric',
                     month: 'long',
                     year: 'numeric',

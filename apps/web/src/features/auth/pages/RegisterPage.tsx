@@ -5,9 +5,11 @@ import { AuthLayout } from '../components/AuthLayout';
 import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/TextField';
 import { getApiErrorMessage, useRegister } from '../hooks/useAuth';
+import { useI18n } from '@/i18n/useI18n';
 
 export function RegisterPage() {
   const register = useRegister();
+  const { t } = useI18n();
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -32,27 +34,27 @@ export function RegisterPage() {
 
   return (
     <AuthLayout
-      title="Crear cuenta"
-      subtitle="Empezad a guardar vuestros recuerdos"
+      title={t('auth.registerTitle')}
+      subtitle={t('auth.registerSubtitle')}
       footer={
         <>
-          ¿Ya tenéis cuenta?{' '}
+          {t('auth.haveAccount')}{' '}
           <Link to="/login" className="font-semibold text-accent hover:underline">
-            Entrar
+            {t('auth.enter')}
           </Link>
         </>
       }
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
         <TextField
-          label="Nombre"
+          label={t('auth.name')}
           name="name"
           autoComplete="name"
-          placeholder="Tu nombre"
+          placeholder={t('auth.namePlaceholder')}
           error={fieldErrors.name}
         />
         <TextField
-          label="Email"
+          label={t('auth.email')}
           name="email"
           type="email"
           autoComplete="email"
@@ -60,18 +62,18 @@ export function RegisterPage() {
           error={fieldErrors.email}
         />
         <TextField
-          label="Contraseña"
+          label={t('auth.password')}
           name="password"
           type="password"
           autoComplete="new-password"
-          placeholder="Mínimo 8 caracteres"
+          placeholder={t('auth.passwordHint')}
           error={fieldErrors.password}
         />
         {register.isError && (
           <p className="text-sm text-red-500">{getApiErrorMessage(register.error)}</p>
         )}
         <Button type="submit" loading={register.isPending} className="mt-2 w-full">
-          Crear cuenta
+          {t('auth.createAccount')}
         </Button>
       </form>
     </AuthLayout>

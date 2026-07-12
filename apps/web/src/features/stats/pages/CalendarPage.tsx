@@ -3,12 +3,7 @@ import { motion } from 'framer-motion';
 import { cloudinaryThumb } from '@/utils/cloudinary';
 import { Button } from '@/components/ui/Button';
 import { useCalendar } from '../hooks/useStats';
-
-const MONTHS = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
-];
-const WEEKDAYS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+import { useI18n } from '@/i18n/useI18n';
 
 /** Vista calendario: cada día muestra una miniatura de sus recuerdos, al estilo
  *  de las contribuciones de GitHub pero con fotos. */
@@ -17,6 +12,15 @@ export function CalendarPage() {
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth() + 1);
   const { data: days } = useCalendar(year, month);
+  const { locale } = useI18n();
+
+  const monthTitle = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(
+    new Date(year, month - 1, 1),
+  );
+  // Días de la semana empezando en lunes, localizados a una letra.
+  const weekdays = Array.from({ length: 7 }, (_, i) =>
+    new Intl.DateTimeFormat(locale, { weekday: 'narrow' }).format(new Date(2024, 0, 1 + i)),
+  );
 
   const byDate = new Map((days ?? []).map((d) => [d.date, d]));
   const firstDay = new Date(year, month - 1, 1);
@@ -33,8 +37,8 @@ export function CalendarPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-          {MONTHS[month - 1]} {year}
+        <h1 className="text-2xl font-bold capitalize text-neutral-900 dark:text-neutral-100">
+          {monthTitle}
         </h1>
         <div className="flex gap-2">
           <Button variant="ghost" onClick={() => shift(-1)}>
@@ -47,8 +51,8 @@ export function CalendarPage() {
       </div>
 
       <div className="grid grid-cols-7 gap-2">
-        {WEEKDAYS.map((d) => (
-          <div key={d} className="text-center text-xs font-medium text-neutral-400">
+        {weekdays.map((d, i) => (
+          <div key={i} className="text-center text-xs font-medium uppercase text-neutral-400">
             {d}
           </div>
         ))}

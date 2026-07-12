@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion';
 import { useOnThisDay } from '../hooks/useMemories';
 import { MemoryCard } from './MemoryCard';
+import { useI18n } from '@/i18n/useI18n';
 
 /** Banner "Hace un año / Hoy hace X años": muestra recuerdos de este mismo día
  *  en años anteriores. Solo aparece si hay coincidencias. */
 export function OnThisDayBanner() {
   const { data: memories } = useOnThisDay();
+  const { t } = useI18n();
   if (!memories || memories.length === 0) return null;
 
   const currentYear = new Date().getFullYear();
@@ -19,7 +21,7 @@ export function OnThisDayBanner() {
     >
       <div className="mb-3 flex items-center gap-2">
         <span className="text-xl">✨</span>
-        <h2 className="font-bold text-neutral-900 dark:text-neutral-100">Un día como hoy</h2>
+        <h2 className="font-bold text-neutral-900 dark:text-neutral-100">{t('onThisDay.title')}</h2>
       </div>
       <div className="grid auto-rows-[140px] grid-cols-3 gap-3 sm:grid-cols-5">
         {memories.map((memory) => {
@@ -28,7 +30,7 @@ export function OnThisDayBanner() {
             <div key={memory.id} className="relative">
               <MemoryCard memory={memory} />
               <span className="absolute left-1.5 top-1.5 rounded-full bg-black/50 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur">
-                {years === 1 ? 'Hace 1 año' : `Hace ${years} años`}
+                {years === 1 ? t('onThisDay.oneYear') : t('onThisDay.years', { years })}
               </span>
             </div>
           );
