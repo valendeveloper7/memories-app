@@ -101,8 +101,8 @@ export function AlbumEditor({
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-surface">
-      <header className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-        <span className="font-semibold text-neutral-900 dark:text-neutral-100">
+      <header className="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+        <span className="min-w-0 flex-1 truncate font-semibold text-neutral-900 dark:text-neutral-100">
           {t('editor.editing', { title: album.title })}
         </span>
         <div className="flex items-center gap-2">
@@ -165,6 +165,8 @@ export function AlbumEditor({
                   transform: `rotate(${item.rotation}deg)`,
                   zIndex: item.zIndex,
                   borderRadius: item.borderRadius ?? 12,
+                  // Evita que el navegador haga scroll/zoom al arrastrar en táctil.
+                  touchAction: 'none',
                 }}
                 className={`absolute cursor-move overflow-hidden ring-offset-2 ${
                   item.shadow ? SHADOW_CLASS[item.shadow] : 'shadow-md'
@@ -186,7 +188,8 @@ export function AlbumEditor({
                 {isSelected && !item.locked && (
                   <span
                     onPointerDown={(e) => startResize(e, item, cell)}
-                    className="absolute bottom-0 right-0 h-4 w-4 cursor-se-resize rounded-tl bg-accent"
+                    style={{ touchAction: 'none' }}
+                    className="absolute bottom-0 right-0 h-6 w-6 cursor-se-resize rounded-tl bg-accent md:h-4 md:w-4"
                   />
                 )}
               </div>

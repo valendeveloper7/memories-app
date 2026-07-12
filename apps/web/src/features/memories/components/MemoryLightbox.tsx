@@ -34,25 +34,30 @@ export function MemoryLightbox({
           onClick={onClose}
         >
           <motion.div
-            className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row dark:bg-neutral-900"
+            className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-y-auto rounded-2xl bg-white shadow-2xl md:flex-row md:overflow-hidden dark:bg-neutral-900"
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex flex-1 items-center justify-center bg-black">
+            <div className="flex shrink-0 items-center justify-center bg-black md:flex-1">
               {memory.type === 'video' ? (
-                <video src={memory.mediaUrl} controls autoPlay className="max-h-[90vh] w-full" />
+                <video
+                  src={memory.mediaUrl}
+                  controls
+                  autoPlay
+                  className="max-h-[45vh] w-full md:max-h-[92vh]"
+                />
               ) : (
                 <img
                   src={memory.mediaUrl}
                   alt={memory.title ?? 'Recuerdo'}
-                  className="max-h-[90vh] w-full object-contain"
+                  className="max-h-[45vh] w-full object-contain md:max-h-[92vh]"
                 />
               )}
             </div>
 
-            <aside className="flex w-full flex-col gap-4 p-5 md:w-80">
+            <aside className="flex w-full shrink-0 flex-col gap-4 p-5 md:w-80">
               <div>
                 {memory.title && (
                   <h2 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">

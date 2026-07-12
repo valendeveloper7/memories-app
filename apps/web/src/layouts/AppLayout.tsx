@@ -30,18 +30,18 @@ export function AppLayout() {
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-40 border-b border-neutral-200/70 bg-surface/80 backdrop-blur dark:border-neutral-800">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
-            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-lg font-bold text-transparent">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="truncate bg-gradient-to-r from-accent to-secondary bg-clip-text text-lg font-bold text-transparent">
               {space?.name ?? 'Nosotros'}
             </span>
             {waitingForPartner && space && (
-              <span className="rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent">
+              <span className="shrink-0 rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent">
                 {t('header.code')}: {space.inviteCode}
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <NotificationBell />
             <span className="hidden text-sm text-neutral-500 sm:inline dark:text-neutral-400">
               {user?.name}

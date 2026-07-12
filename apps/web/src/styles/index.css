@@ -22,6 +22,8 @@
 body {
   @apply bg-surface text-neutral-900 antialiased dark:text-neutral-100;
   font-family: var(--font-sans);
+  /* Evita el scroll horizontal accidental en móvil. */
+  overflow-x: hidden;
 }
 
 /* Cuando el usuario desactiva las animaciones en Ajustes. */
