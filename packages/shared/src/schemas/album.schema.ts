@@ -12,6 +12,8 @@ export const createAlbumSchema = z.object({
   icon: z.string().max(30).optional(),
   tags: z.array(z.string().trim().min(1).max(40)).max(30).optional(),
   visibility: z.enum(['private', 'shared']).optional(),
+  /** Fecha personalizada del álbum. Si se omite, es la fecha actual. */
+  date: z.string().datetime().optional(),
 });
 
 export const updateAlbumSchema = z

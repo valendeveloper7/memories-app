@@ -17,6 +17,7 @@ import { commentRouter } from './modules/comments/comment.routes.js';
 import { reactionRouter } from './modules/reactions/reaction.routes.js';
 import { notificationRouter } from './modules/notifications/notification.routes.js';
 import { statsRouter } from './modules/stats/stats.routes.js';
+import { eventRouter } from './modules/events/event.routes.js';
 
 /**
  * Construye la aplicación Express con la cadena de middlewares de seguridad
@@ -63,6 +64,7 @@ export function createApp(): Application {
   app.use('/api/reactions', reactionRouter);
   app.use('/api/notifications', notificationRouter);
   app.use('/api/stats', statsRouter);
+  app.use('/api/events', eventRouter);
 
   app.use(notFound);
   app.use(errorHandler);

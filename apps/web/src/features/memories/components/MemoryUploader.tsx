@@ -3,22 +3,38 @@ import { motion } from 'framer-motion';
 import { useUploadMemory } from '../hooks/useUploadMemory';
 import { useI18n } from '@/i18n/useI18n';
 
-/** Zona de subida con drag & drop y selección de archivos. Muestra el progreso
- *  de cada archivo mientras sube a Cloudinary. */
+/** Zona de subida con drag & drop y selección de archivos. Permite fijar la
+ *  fecha de los recuerdos subidos (por defecto, hoy). Muestra el progreso de
+ *  cada archivo mientras sube a Cloudinary. */
 export function MemoryUploader({ albumId }: { albumId?: string }) {
   const { upload, items } = useUploadMemory(albumId);
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [date, setDate] = useState('');
+
+  const dateIso = date ? new Date(`${date}T12:00:00`).toISOString() : undefined;
 
   function handleDrop(event: DragEvent<HTMLDivElement>) {
     event.preventDefault();
     setDragOver(false);
-    if (event.dataTransfer.files.length > 0) upload(event.dataTransfer.files);
+    if (event.dataTransfer.files.length > 0) upload(event.dataTransfer.files, dateIso);
   }
 
   return (
     <div>
+      <div className="mb-2 flex items-center gap-2">
+        <label className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+          {t('memory.dateForUploads')}
+        </label>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="rounded-lg border border-neutral-200 bg-white px-2 py-1 text-xs dark:border-neutral-700 dark:bg-neutral-900"
+        />
+      </div>
+
       <div
         onDragOver={(e) => {
           e.preventDefault();
@@ -43,7 +59,7 @@ export function MemoryUploader({ albumId }: { albumId?: string }) {
           accept="image/*,video/*"
           multiple
           className="hidden"
-          onChange={(e) => e.target.files && upload(e.target.files)}
+          onChange={(e) => e.target.files && upload(e.target.files, dateIso)}
         />
       </div>
 

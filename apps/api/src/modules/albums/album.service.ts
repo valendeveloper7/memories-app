@@ -36,11 +36,24 @@ export async function getAlbum(scope: Scope, id: string): Promise<PublicAlbum> {
 }
 
 export async function createAlbum(scope: Scope, input: CreateAlbumInput): Promise<PublicAlbum> {
-  const album = await AlbumModel.create({
-    ...input,
+  const { date, ...rest } = input;
+  const album = new AlbumModel({
+    ...rest,
     spaceId: new Types.ObjectId(scope.spaceId),
     createdBy: new Types.ObjectId(scope.userId),
   });
+
+  if (date) {
+    // Fecha personalizada del álbum: fijamos createdAt desactivando los
+    // timestamps automáticos para que no la sobrescriban.
+    const customDate = new Date(date);
+    album.createdAt = customDate;
+    album.updatedAt = customDate;
+    await album.save({ timestamps: false });
+  } else {
+    await album.save();
+  }
+
   return toPublicAlbum(album, true);
 }
 

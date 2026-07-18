@@ -33,7 +33,7 @@ export function useUploadMemory(albumId?: string) {
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, ...partial } : it)));
   }
 
-  async function uploadOne(file: File): Promise<void> {
+  async function uploadOne(file: File, dateIso?: string): Promise<void> {
     const id = crypto.randomUUID();
     setItems((prev) => [...prev, { id, file, progress: 0, status: 'uploading' }]);
 
@@ -49,7 +49,8 @@ export function useUploadMemory(albumId?: string) {
         width: result.width,
         height: result.height,
         duration: result.duration,
-        actualDate: new Date(file.lastModified).toISOString(),
+        // Fecha elegida por el usuario o, por defecto, hoy.
+        actualDate: dateIso ?? new Date().toISOString(),
       });
 
       patch(id, { status: 'done', progress: 100 });
@@ -58,8 +59,9 @@ export function useUploadMemory(albumId?: string) {
     }
   }
 
-  async function upload(files: FileList | File[]): Promise<void> {
-    await Promise.all(Array.from(files).map(uploadOne));
+  /** Sube los archivos. `dateIso` (opcional) fija la fecha del recuerdo. */
+  async function upload(files: FileList | File[], dateIso?: string): Promise<void> {
+    await Promise.all(Array.from(files).map((file) => uploadOne(file, dateIso)));
     await queryClient.invalidateQueries({ queryKey: memoryKeys.all });
     // Limpia los completados tras un momento.
     setTimeout(() => setItems((prev) => prev.filter((it) => it.status === 'error')), 1500);

@@ -18,11 +18,13 @@ export function CreateAlbumModal({ open, onClose }: { open: boolean; onClose: ()
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const rawTags = String(form.get('tags') ?? '').trim();
+    const rawDate = String(form.get('date') ?? '').trim();
     const values = {
       title: String(form.get('title')),
       description: String(form.get('description') ?? '').trim() || undefined,
       icon: String(form.get('icon') ?? '').trim() || undefined,
       tags: rawTags ? rawTags.split(',').map((t) => t.trim()).filter(Boolean) : undefined,
+      date: rawDate ? new Date(`${rawDate}T12:00:00`).toISOString() : undefined,
     };
 
     const parsed = createAlbumSchema.safeParse(values);
@@ -63,6 +65,16 @@ export function CreateAlbumModal({ open, onClose }: { open: boolean; onClose: ()
             placeholder={t('albumForm.tagsPlaceholder')}
           />
         </div>
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+            {t('album.date')}
+          </span>
+          <input
+            type="date"
+            name="date"
+            className="rounded-xl border border-neutral-200 bg-white px-3.5 py-2.5 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+          />
+        </label>
         {createAlbum.isError && (
           <p className="text-sm text-red-500">{getApiErrorMessage(createAlbum.error)}</p>
         )}

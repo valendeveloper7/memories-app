@@ -4,6 +4,7 @@ import type { PublicMemory } from 'shared';
 import { ReactionBar } from '@/features/reactions/components/ReactionBar';
 import { CommentsSection } from '@/features/comments/components/CommentsSection';
 import { useI18n } from '@/i18n/useI18n';
+import { useUpdateMemory } from '../hooks/useMemories';
 
 /** Vista ampliada de un recuerdo: media a gran tamaño, fecha, reacciones y
  *  comentarios en un panel lateral. Cierra con Escape o clic en el fondo. */
@@ -14,7 +15,8 @@ export function MemoryLightbox({
   memory: PublicMemory | null;
   onClose: () => void;
 }) {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
+  const updateMemory = useUpdateMemory();
 
   useEffect(() => {
     if (!memory) return;
@@ -71,6 +73,21 @@ export function MemoryLightbox({
                     year: 'numeric',
                   })}
                 </p>
+                <label className="mt-2 flex items-center gap-2 text-xs text-neutral-400">
+                  {t('memory.date')}
+                  <input
+                    type="date"
+                    defaultValue={memory.actualDate.slice(0, 10)}
+                    onChange={(e) => {
+                      if (!e.target.value) return;
+                      updateMemory.mutate({
+                        id: memory.id,
+                        input: { actualDate: new Date(`${e.target.value}T12:00:00`).toISOString() },
+                      });
+                    }}
+                    className="rounded-lg border border-neutral-200 bg-white px-2 py-1 text-xs dark:border-neutral-700 dark:bg-neutral-900"
+                  />
+                </label>
                 {memory.description && (
                   <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
                     {memory.description}
